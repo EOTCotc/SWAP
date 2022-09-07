@@ -1,0 +1,383 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "connector",
+				"type": "address"
+			}
+		],
+		"name": "addConnector",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "dexName",
+				"type": "string"
+			},
+			{
+				"internalType": "contract IOracle",
+				"name": "oracle",
+				"type": "address"
+			},
+			{
+				"internalType": "enum OffchainOracleV5.OracleType",
+				"name": "oracleKind",
+				"type": "uint8"
+			}
+		],
+		"name": "addOracle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string[]",
+				"name": "dexName",
+				"type": "string[]"
+			},
+			{
+				"internalType": "contract IOracle[]",
+				"name": "existingOracles",
+				"type": "address[]"
+			},
+			{
+				"internalType": "enum OffchainOracleV5.OracleType[]",
+				"name": "oracleTypes",
+				"type": "uint8[]"
+			},
+			{
+				"internalType": "contract IERC20[]",
+				"name": "existingConnectors",
+				"type": "address[]"
+			},
+			{
+				"internalType": "contract IERC20",
+				"name": "wBase",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "contract IERC20",
+				"name": "connector",
+				"type": "address"
+			}
+		],
+		"name": "ConnectorAdded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "contract IERC20",
+				"name": "connector",
+				"type": "address"
+			}
+		],
+		"name": "ConnectorRemoved",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "contract IOracle",
+				"name": "oracle",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum OffchainOracleV5.OracleType",
+				"name": "oracleType",
+				"type": "uint8"
+			}
+		],
+		"name": "OracleAdded",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "contract IOracle",
+				"name": "oracle",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum OffchainOracleV5.OracleType",
+				"name": "oracleType",
+				"type": "uint8"
+			}
+		],
+		"name": "OracleRemoved",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "connector",
+				"type": "address"
+			}
+		],
+		"name": "removeConnector",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IOracle",
+				"name": "oracle",
+				"type": "address"
+			},
+			{
+				"internalType": "enum OffchainOracleV5.OracleType",
+				"name": "oracleKind",
+				"type": "uint8"
+			}
+		],
+		"name": "removeOracle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "_dexName",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "connectors",
+		"outputs": [
+			{
+				"internalType": "contract IERC20[]",
+				"name": "allConnectors",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "srcToken",
+				"type": "address"
+			},
+			{
+				"internalType": "contract IERC20",
+				"name": "dstToken",
+				"type": "address"
+			}
+		],
+		"name": "getRate",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "router",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "connectors",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weightedRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balanceA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balanceB",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lpWeight",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct OffchainOracleV5.TokenRate[]",
+				"name": "tokenWeightedRate",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "srcToken",
+				"type": "address"
+			}
+		],
+		"name": "getRateToEth",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "router",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "connectors",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weightedRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balanceA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balanceB",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "lpWeight",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct OffchainOracleV5.TokenRate[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "oracles",
+		"outputs": [
+			{
+				"internalType": "contract IOracle[]",
+				"name": "allOracles",
+				"type": "address[]"
+			},
+			{
+				"internalType": "enum OffchainOracleV5.OracleType[]",
+				"name": "oracleTypes",
+				"type": "uint8[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
