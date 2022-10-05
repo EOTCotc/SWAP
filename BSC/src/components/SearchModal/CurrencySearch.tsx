@@ -1,4 +1,4 @@
-import { Currency, ETHER, Token } from 'eotc-bscswap-sdk'
+import { Currency, Token } from 'eotc-bscswap-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga'
 // import { useTranslation } from 'react-i18next'
@@ -121,7 +121,7 @@ export function CurrencySearch({
       if (e.key === 'Enter') {
         const s = searchQuery.toLowerCase().trim()
         if (s === 'eth') {
-          handleCurrencySelect(ETHER)
+          handleCurrencySelect(Currency.ETHER)
         } else if (filteredSortedTokens.length > 0) {
           if (
             filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
@@ -202,7 +202,7 @@ export function CurrencySearch({
             </Row>
           ) : null}
           <LinkStyledButton
-            style={{ fontWeight: 500, color: theme.text2, fontSize: 16,width: '91px' }}
+            style={{ fontWeight: 500, color: theme.text2, fontSize: 16, width: '91px' }}
             onClick={onChangeList}
             id="currency-search-change-list-button"
           >

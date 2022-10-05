@@ -38,7 +38,7 @@ export default function MigrateV1() {
     }
   }, [token, isOnSelectedList, addToken, allTokens])
 
-  // get V1 LP balances
+  // get V1 LP balances 获得 V1 LP 余额
   const V1Exchanges = useAllTokenV1Exchanges()
   const V1LiquidityTokens: Token[] = useMemo(() => {
     return chainId

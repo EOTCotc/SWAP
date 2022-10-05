@@ -62,10 +62,39 @@ export const ButtonPrimary = styled(Base)`
     opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
   }
 `
-// ${({ theme }) => theme.primaryText1}   
+export const ButtonExchang = styled(Base)`
+  background-color: ${({ theme }) => theme.primary1};
+  color: white;
+  border-radius: 8px;
+  /* width: 75px;
+  height: 30px; */
+  white-space: nowrap;
+  padding: 7px 26px;
+  &:focus {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.primary1)};
+    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+  }
+  &:hover {
+    background-color: ${({ theme }) => darken(0.05, theme.primary1)};
+  }
+  &:active {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.primary1)};
+    background-color: ${({ theme }) => darken(0.1, theme.primary1)};
+  }
+  &:disabled {
+    background-color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? theme.primary1 : theme.bg3)};
+    color: ${({ theme, altDisabledStyle }) => (altDisabledStyle ? 'white' : theme.text3)};
+    cursor: auto;
+    box-shadow: none;
+    border: 1px solid transparent;
+    outline: none;
+    opacity: ${({ altDisabledStyle }) => (altDisabledStyle ? '0.7' : '1')};
+  }
+`
+// ${({ theme }) => theme.primaryText1}
 export const ButtonLight = styled(Base)`
-  background-color: ${({ theme }) => theme.primary5} ;
-  color: ${({ theme }) => theme.primaryText1}  ;
+  background-color: ${({ theme }) => theme.primary5};
+  color: ${({ theme }) => theme.primaryText1};
   font-size: 16px;
   font-weight: 500;
   &:focus {
@@ -91,9 +120,9 @@ export const ButtonLight = styled(Base)`
   }
 `
 export const ButtonWallet = styled.img`
-  width:18px;
-  height:18px;
-  margin-right:5px;
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
 `
 
 export const ButtonGray = styled(Base)`
@@ -258,6 +287,32 @@ const ButtonErrorStyle = styled(Base)`
     border: 1px solid ${({ theme }) => theme.red1};
   }
 `
+const ButtonErrorStyleExchang = styled(Base)`
+  background-color: ${({ theme }) => theme.red1};
+  border: 1px solid ${({ theme }) => theme.red1};
+  border-radius: 8px;
+  white-space: nowrap;
+  padding: 7px 7px;
+  min-width: 86px;
+  &:focus {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.05, theme.red1)};
+    background-color: ${({ theme }) => darken(0.05, theme.red1)};
+  }
+  &:hover {
+    background-color: ${({ theme }) => darken(0.05, theme.red1)};
+  }
+  &:active {
+    box-shadow: 0 0 0 1pt ${({ theme }) => darken(0.1, theme.red1)};
+    background-color: ${({ theme }) => darken(0.1, theme.red1)};
+  }
+  &:disabled {
+    opacity: 50%;
+    cursor: auto;
+    box-shadow: none;
+    background-color: ${({ theme }) => theme.red1};
+    border: 1px solid ${({ theme }) => theme.red1};
+  }
+`
 
 export function ButtonConfirmed({
   confirmed,
@@ -270,12 +325,30 @@ export function ButtonConfirmed({
     return <ButtonPrimary {...rest} altDisabledStyle={altDisabledStyle} />
   }
 }
+export function ButtonConfirmedExchange({
+  confirmed,
+  altDisabledStyle,
+  ...rest
+}: { confirmed?: boolean; altDisabledStyle?: boolean } & ButtonProps) {
+  if (confirmed) {
+    return <ButtonConfirmedStyle {...rest} />
+  } else {
+    return <ButtonExchang {...rest} altDisabledStyle={altDisabledStyle} />
+  }
+}
 
 export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonProps) {
   if (error) {
     return <ButtonErrorStyle {...rest} />
   } else {
     return <ButtonPrimary {...rest} />
+  }
+}
+export function ButtonErrorExchang({ error, ...rest }: { error?: boolean } & ButtonProps) {
+  if (error) {
+    return <ButtonErrorStyleExchang {...rest} />
+  } else {
+    return <ButtonExchang {...rest} />
   }
 }
 

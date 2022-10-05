@@ -18,7 +18,7 @@ const StyledInput = styled.input<{ error?: boolean; fontSize?: string; align?: s
   text-overflow: ellipsis;
   padding: 0 10px 0 0;
   -webkit-appearance: textfield;
-  text-align:right;
+  text-align: right;
 
   ::-webkit-search-decoration {
     -webkit-appearance: none;

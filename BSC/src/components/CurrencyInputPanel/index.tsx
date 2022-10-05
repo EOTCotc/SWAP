@@ -21,14 +21,14 @@ const InputRow = styled.div<{ selected: boolean }>`
   align-items: center;
   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0rem 0.75rem 1rem')};
 `
-// selected ?   : theme.primary1  selected ? 
+// selected ?   : theme.primary1  selected ?
 //  box-shadow: ${({ selected }) => (selected ? 'none' : '0px 6px 10px rgba(0, 0, 0, 0.075)')};
 const CurrencySelect = styled.button<{ selected: boolean }>`
   align-items: center;
   height: 2.2rem;
   font-size: 20px;
   font-weight: 500;
-  background-color: ${({ selected, theme }) => (theme.bg1)};
+  background-color: ${({ selected, theme }) => theme.bg1};
   color: ${({ selected, theme }) => (selected ? theme.text1 : theme.text1)};
   border-radius: 12px;
   outline: none;
@@ -39,7 +39,7 @@ const CurrencySelect = styled.button<{ selected: boolean }>`
 
   :focus,
   :hover {
-    background-color: ${({ selected, theme }) => (theme.bg2)};
+    background-color: ${({ selected, theme }) => theme.bg2};
   }
 `
 
@@ -92,30 +92,32 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
   display:flex;
 
 `
+// :hover {
+//   border: 1px solid ${({ theme }) => theme.primary1};
+// }
+// :focus {
+//   border: 1px solid ${({ theme }) => theme.primary1};
+//   outline: none;
+// }
+const StyledBalanceMax = styled.button`
+  height: 28px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  position: absolute;
+  top: 6px;
+  left: 65px;
 
-// const StyledBalanceMax = styled.button`
-//   height: 28px;
-//   background-color: ${({ theme }) => theme.primary5};
-//   border: 1px solid ${({ theme }) => theme.primary5};
-//   border-radius: 0.5rem;
-//   font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  color: ${({ theme }) => theme.primaryText1};
 
-//   font-weight: 500;
-//   cursor: pointer;
-//   margin-right: 0.5rem;
-//   color: ${({ theme }) => theme.primaryText1};
-//   :hover {
-//     border: 1px solid ${({ theme }) => theme.primary1};
-//   }
-//   :focus {
-//     border: 1px solid ${({ theme }) => theme.primary1};
-//     outline: none;
-//   }
-
-//   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-//     margin-right: 0.5rem;
-//   `};
-// `
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    margin-right: 0.5rem;
+  `};
+`
 
 interface CurrencyInputPanelProps {
   value: string
@@ -132,6 +134,7 @@ interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
+  showInput?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -148,7 +151,8 @@ export default function CurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
-  showCommonBases
+  showCommonBases,
+  showInput = true
 }: CurrencyInputPanelProps) {
   // const { t } = useTranslation()
 
@@ -187,7 +191,6 @@ export default function CurrencyInputPanel({
           </LabelRow>
         )}
         <InputRow style={hideInput ? { padding: '0', borderRadius: '8px' } : {}} selected={disableCurrencySelect}>
-          
           <CurrencySelect
             selected={!!currency}
             className="open-currency-select-button"
@@ -199,44 +202,47 @@ export default function CurrencyInputPanel({
           >
             <Aligner>
               {pair ? (
-                  <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
+                <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={24} margin={true} />
               ) : currency ? (
                 <CurrencyLogo currency={currency} size={'24px'} />
               ) : null}
               {pair ? (
                 <>
-                <StyledTokenName className="pair-name-container">
-                  {pair?.token0.symbol}:{pair?.token1.symbol}
-                </StyledTokenName>
+                  <StyledTokenName className="pair-name-container">
+                    {pair?.token0.symbol}:{pair?.token1.symbol}
+                  </StyledTokenName>
                 </>
               ) : (
                 <>
-                {/* {pair ? (<img src={EotcLogo} style={{width:'24px',height:'24px'}} alt=""/>): null}  || t('selectToken')                */}
+                  {/* {pair ? (<img src={EotcLogo} style={{width:'24px',height:'24px'}} alt=""/>): null}  || t('selectToken')                */}
                   <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>
-                    {(currency && currency.symbol && currency.symbol.length > 20
+                    {currency && currency.symbol && currency.symbol.length > 20
                       ? currency.symbol.slice(0, 4) +
                         '...' +
                         currency.symbol.slice(currency.symbol.length - 5, currency.symbol.length)
-                      : currency?.symbol)}
+                      : currency?.symbol}
                   </StyledTokenName>
                 </>
               )}
               {!disableCurrencySelect && <StyledDropDown selected={!!currency} />}
             </Aligner>
           </CurrencySelect>
-          {!hideInput && (
+          {!hideInput && showInput && (
             <>
               <NumericalInput
                 className="token-amount-input"
                 value={value}
                 onUserInput={val => {
+                  console.log(val, 'input value = ' + val)
                   onUserInput(val)
                 }}
               />
               {/* && (
                 <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
               ) */}
-              {account && currency && showMaxButton && label !== 'To'}
+              {account && currency && showMaxButton && label !== 'To' && (
+                <StyledBalanceMax onClick={onMax}>全部</StyledBalanceMax>
+              )}
             </>
           )}
         </InputRow>

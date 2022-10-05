@@ -48,6 +48,14 @@
       "chainId": 11111,
       "decimals": 6,
       "logoURI": "https://raw.githubusercontent.com/EOTCotc/ListTokens/main/img/usdt.png"
+    },
+    {
+      "name": "SUN",
+      "symbol": "SUN",
+      "address": "0xb4a428ab7092c2f1395f376ce297033b3bb446c1",
+      "chainId": 11111,
+      "decimals": 18,
+      "logoURI": "https://static.tronscan.org/production/logo/TSSMHYeV2uE9qYH95DqyoCuNCzEL1NvU3S.png"
     }
   ]
 }

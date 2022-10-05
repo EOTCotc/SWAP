@@ -4,6 +4,7 @@ import { USDC } from '../constants'
 import { PairState, usePairs } from '../data/Reserves'
 import { useActiveWeb3React } from '../hooks'
 import { wrappedCurrency } from './wrappedCurrency'
+// import { CONTRACT } from '../constants'
 
 /**
  * Returns the price in USDC of the input currency

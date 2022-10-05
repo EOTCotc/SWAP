@@ -1,4 +1,4 @@
-import { Currency, currencyEquals, ETHER, WETH } from 'eotc-bscswap-sdk'
+import { Currency, currencyEquals, WETH } from 'eotc-bscswap-sdk'
 import { useMemo } from 'react'
 import { tryParseAmount } from '../state/swap/hooks'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -15,6 +15,7 @@ export enum WrapType {
 const NOT_APPLICABLE = { wrapType: WrapType.NOT_APPLICABLE }
 /**
  * Given the selected input and output currency, return a wrap callback
+ * 给定选定的输入和输出货币，返回包裹回调
  * @param inputCurrency the selected input currency
  * @param outputCurrency the selected output currency
  * @param typedValue the user input value
@@ -28,6 +29,7 @@ export default function useWrapCallback(
   const wethContract = useWETHContract()
   const balance = useCurrencyBalance(account ?? undefined, inputCurrency)
   // we can always parse the amount typed as the input currency, since wrapping is 1:1
+  //我们始终可以解析输入的输入货币的金额，因为包装为1：1
   const inputAmount = useMemo(() => tryParseAmount(typedValue, inputCurrency), [inputCurrency, typedValue])
   const addTransaction = useTransactionAdder()
 
@@ -36,7 +38,7 @@ export default function useWrapCallback(
 
     const sufficientBalance = inputAmount && balance && !balance.lessThan(inputAmount)
 
-    if (inputCurrency === ETHER && currencyEquals(WETH[chainId], outputCurrency)) {
+    if (inputCurrency === Currency.ETHER && currencyEquals(WETH[chainId], outputCurrency)) {
       return {
         wrapType: WrapType.WRAP,
         execute:
@@ -52,7 +54,7 @@ export default function useWrapCallback(
             : undefined,
         inputError: sufficientBalance ? undefined : 'Insufficient ETH balance'
       }
-    } else if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === ETHER) {
+    } else if (currencyEquals(WETH[chainId], inputCurrency) && outputCurrency === Currency.ETHER) {
       return {
         wrapType: WrapType.UNWRAP,
         execute:
@@ -61,7 +63,6 @@ export default function useWrapCallback(
                 try {
                   const txReceipt = await wethContract.withdraw(`0x${inputAmount.raw.toString(16)}`)
                   addTransaction(txReceipt, { summary: `Unwrap ${inputAmount.toSignificant(6)} WETH to ETH` })
-                  
                 } catch (error) {
                   console.error('Could not withdraw', error)
                 }

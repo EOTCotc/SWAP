@@ -19,7 +19,10 @@ export const RowFlat = styled.div`
   display: flex;
   align-items: flex-end;
 `
-
+export const RowEnd = styled(Row)`
+  width: auto;
+  align-items: flex-end;
+`
 export const AutoRow = styled(Row)<{ gap?: string; justify?: string }>`
   flex-wrap: wrap;
   margin: ${({ gap }) => gap && `-${gap}`};
@@ -34,5 +37,12 @@ export const RowFixed = styled(Row)<{ gap?: string; justify?: string }>`
   width: fit-content;
   margin: ${({ gap }) => gap && `-${gap}`};
 `
+// export const RowFixed2 = styled(Row)<{ gap?: string; justify?: string }>`
+//   width: fit-content;
+//   margin: ${({ gap }) => gap && `-${gap}`};
+//   ${({ theme }) => theme.mediaWidth.upToMoreSmall`
+//     padding: 1rem;
+//   `};
+// `
 
 export default Row

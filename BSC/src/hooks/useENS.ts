@@ -4,6 +4,7 @@ import useENSName from './useENSName'
 
 /**
  * Given a name or address, does a lookup to resolve to an address and name
+ * 给定名称或地址，执行查找以解析到地址和名称
  * @param nameOrAddress ENS name or address
  */
 export default function useENS(

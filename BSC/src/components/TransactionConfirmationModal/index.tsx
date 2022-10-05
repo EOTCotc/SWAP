@@ -57,7 +57,7 @@ function ConfirmationPendingContent({ onDismiss, pendingText }: { onDismiss: () 
             </Text>
           </AutoColumn>
           <Text fontSize={12} color="#565A69" textAlign="center">
-          在您的钱包中确认此交易
+            在您的钱包中确认此交易
           </Text>
         </AutoColumn>
       </Section>
@@ -88,13 +88,13 @@ function TransactionSubmittedContent({
         </ConfirmedIcon>
         <AutoColumn gap="12px" justify={'center'}>
           <Text fontWeight={500} fontSize={20}>
-          交易已提交
+            交易已提交
           </Text>
 
           {chainId && hash && (
             <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>
               <Text fontWeight={500} fontSize={14} color={theme.primary1}>
-              在 Bscscan 上查看
+                在 Bscscan 上查看
               </Text>
             </ExternalLink>
           )}

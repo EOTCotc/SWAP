@@ -1,4 +1,4 @@
-import { ChainId, JSBI, Percent, Token, WETH } from '@eotcswap/swap-sdk'
+import { ChainId, JSBI, Percent, Token, WETH, Trade, Pair } from '@eotcswap/swap-sdk'
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 // @TRON
@@ -199,3 +199,75 @@ export const BLOCKED_PRICE_IMPACT_NON_EXPERT: Percent = new Percent(JSBI.BigInt(
 // export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(16)) // .01 ETH
 export const MIN_ETH: JSBI = JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(6)) // 1 ETH
 export const BETTER_TRADE_LINK_THRESHOLD = new Percent(JSBI.BigInt(75), JSBI.BigInt(10000))
+
+interface CONTRACT {
+  [key: string]: {
+    FACTORY: string
+    ROUTER: string
+    INIT_CODE_HASH: string
+    Icon: string
+  }
+}
+export const CONTRACT: CONTRACT = {
+  EOTC: {
+    FACTORY: '0x28d6a74c2e3a4da074011afef9238b59cf4fd825',
+    ROUTER: '0x74d72007c4c71ccdd6f30c6d6ead17f6baed330a',
+    INIT_CODE_HASH: '0xd81a8b57892d57f214f7ee297a246d0c81ad5dd2d7621668ea1705ea13da2f25',
+    Icon: require('../assets/images/eotc.png')
+  },
+  SunSwap: {
+    FACTORY: '0x689abaeeed3f0bb3585773192e23224cac25dd41',
+    ROUTER: '0x6e0617948fe030a7e4970f8389d4ad295f249b7e',
+    INIT_CODE_HASH: '0x6d3f89421f83e4b62e628de8fc7ff2b014a79bf8fd8e8b0ea46e4a1d9409b67d',
+    Icon: require('../assets/images/swapLogo/sunswap.png')
+  }
+  // Mdex: {
+  //   FACTORY: '0x3CD1C46068dAEa5Ebb0d3f55F6915B10648062B8',
+  //   ROUTER: '0x0384E9ad329396C3A6A401243Ca71633B2bC4333',
+  //   INIT_CODE_HASH: '0x0d994d996174b05cfc7bed897dc1b20b4c458fc8d64fe98bc78b3c64a6b4d093',
+  //   Icon: require('../assets/images/swapLogo/mdex.png')
+  // },
+  // Julswap: {
+  //   FACTORY: '0x553990F2CBA90272390f62C5BDb1681fFc899675',
+  //   ROUTER: '0xbd67d157502A23309Db761c41965600c2Ec788b2',
+  //   INIT_CODE_HASH: '0xb1e98e21a5335633815a8cfb3b580071c2e4561c50afd57a8746def9ed890b18',
+  //   Icon: require('../assets/images/swapLogo/Jul.png')
+  // },
+  // BakerySwap: {
+  //   FACTORY: '0x01bF7C66c6BD861915CdaaE475042d3c4BaE16A7',
+  //   ROUTER: '0xCDe540d7eAFE93aC5fE6233Bee57E1270D3E330F',
+  //   INIT_CODE_HASH: '0xe2e87433120e32c4738a7d8f3271f3d872cbe16241d67537139158d90bac61d3',
+  //   Icon: require('../assets/images/swapLogo/Bakery.png')
+  // },
+  // ApeSwap: {
+  //   FACTORY: '0x0841BD0B734E4F5853f0dD8d7Ea041c241fb0Da6',
+  //   ROUTER: '0xcF0feBd3f17CEf5b47b0cD257aCf6025c5BFf3b7',
+  //   INIT_CODE_HASH: '0xf4ccce374816856d11f00e4069e7cada164065686fbef53c6167a63ec2fd8c5b',
+  //   Icon: require('../assets/images/swapLogo/Ape.png')
+  // },
+  // BabySwap: {
+  //   FACTORY: '0x86407bEa2078ea5f5EB5A52B2caA963bC1F889Da',
+  //   ROUTER: '0x8317c460C22A9958c27b4B6403b98d2Ef4E2ad32',
+  //   INIT_CODE_HASH: '0x48c8bec5512d397a5d512fbb7d83d515e7b6d91e9838730bd1aa1b16575da7f5',
+  //   Icon: require('../assets/images/swapLogo/baby.png')
+  // },
+  // Pancake: {
+  //   FACTORY: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+  //   ROUTER: '0x10ED43C718714eb63d5aA57B78B54704E256024E',
+  //   INIT_CODE_HASH: '0x00fb7f630766e6a796048ea87d01acd3068e8ff67d078148a3fa3f4a84f69bd5',
+  //   Icon: require('../assets/images/swapLogo/pancake.png')
+  // },
+  // Suhsi: {
+  //   FACTORY: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+  //   ROUTER: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',
+  //   INIT_CODE_HASH: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+  //   Icon: require('../assets/images/swapLogo/sushi.png')
+  // }
+}
+export interface TradesItem {
+  name: string
+  trade: Trade
+  pairs: Pair[]
+  icon?: string
+}
+export type Trades = TradesItem[]

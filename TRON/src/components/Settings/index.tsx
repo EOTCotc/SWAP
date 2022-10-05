@@ -49,7 +49,7 @@ const StyledMenuButton = styled.button`
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;  
+  height: 35px;
 
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
@@ -154,17 +154,17 @@ export default function SettingsTab() {
             <RowBetween style={{ padding: '0 2rem' }}>
               <div />
               <Text fontWeight={500} fontSize={20}>
-              你确定吗？
+                你确定吗？
               </Text>
               <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
             </RowBetween>
             <Break />
             <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
               <Text fontWeight={500} fontSize={20}>
-              专家模式关闭确认交易提示，并允许经常出现的高滑动交易糟糕的利率和资金损失。
+                专家模式关闭确认交易提示，并允许经常出现的高滑动交易糟糕的利率和资金损失。
               </Text>
               <Text fontWeight={600} fontSize={20}>
-              仅当您知道自己在做什么时才使用此模式。
+                仅当您知道自己在做什么时才使用此模式。
               </Text>
               <ButtonError
                 error={true}
@@ -177,7 +177,7 @@ export default function SettingsTab() {
                 }}
               >
                 <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
-                打开专家模式
+                  打开专家模式
                 </Text>
               </ButtonError>
             </AutoColumn>

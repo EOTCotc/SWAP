@@ -1,4 +1,4 @@
-import { CurrencyAmount, ETHER, Percent, Route, TokenAmount, Trade } from 'eotc-bscswap-sdk'
+import { Currency, CurrencyAmount, Percent, Route, TokenAmount, Trade } from 'eotc-bscswap-sdk'
 import { DAI, USDC } from '../constants'
 import { MockV1Pair } from '../data/V1'
 import v1SwapArguments from './v1SwapArguments'
@@ -18,7 +18,7 @@ describe('v1SwapArguments', () => {
   }
 
   it('exact eth to token', () => {
-    const trade = Trade.exactIn(new Route([USDC_WETH], ETHER), CurrencyAmount.ether('100'))
+    const trade = Trade.exactIn(new Route([USDC_WETH], Currency.ETHER), CurrencyAmount.ether('100'))
     const result = v1SwapArguments(trade, {
       recipient: TEST_RECIPIENT_ADDRESS,
       allowedSlippage: new Percent('1', '100'),
@@ -31,7 +31,7 @@ describe('v1SwapArguments', () => {
     expect(result.value).toEqual('0x64')
   })
   it('exact token to eth', () => {
-    const trade = Trade.exactIn(new Route([USDC_WETH], USDC, ETHER), new TokenAmount(USDC, '100'))
+    const trade = Trade.exactIn(new Route([USDC_WETH], USDC, Currency.ETHER), new TokenAmount(USDC, '100'))
     const result = v1SwapArguments(trade, {
       recipient: TEST_RECIPIENT_ADDRESS,
       allowedSlippage: new Percent('1', '100'),
@@ -61,7 +61,7 @@ describe('v1SwapArguments', () => {
     expect(result.value).toEqual('0x0')
   })
   it('eth to exact token', () => {
-    const trade = Trade.exactOut(new Route([USDC_WETH], ETHER), new TokenAmount(USDC, '100'))
+    const trade = Trade.exactOut(new Route([USDC_WETH], Currency.ETHER), new TokenAmount(USDC, '100'))
     const result = v1SwapArguments(trade, {
       recipient: TEST_RECIPIENT_ADDRESS,
       allowedSlippage: new Percent('1', '100'),
@@ -74,7 +74,7 @@ describe('v1SwapArguments', () => {
     expect(result.value).toEqual('0x66')
   })
   it('token to exact eth', () => {
-    const trade = Trade.exactOut(new Route([USDC_WETH], USDC, ETHER), CurrencyAmount.ether('100'))
+    const trade = Trade.exactOut(new Route([USDC_WETH], USDC, Currency.ETHER), CurrencyAmount.ether('100'))
     const result = v1SwapArguments(trade, {
       recipient: TEST_RECIPIENT_ADDRESS,
       allowedSlippage: new Percent('1', '100'),

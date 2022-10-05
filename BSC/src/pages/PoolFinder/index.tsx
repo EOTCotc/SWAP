@@ -1,4 +1,4 @@
-import { Currency, ETHER, JSBI, TokenAmount } from 'eotc-bscswap-sdk'
+import { Currency, JSBI, TokenAmount } from 'eotc-bscswap-sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
 import { Text } from 'rebass'
@@ -30,10 +30,11 @@ export default function PoolFinder() {
   const [showSearch, setShowSearch] = useState<boolean>(false)
   const [activeField, setActiveField] = useState<number>(Fields.TOKEN1)
 
-  const [currency0, setCurrency0] = useState<Currency | null>(ETHER)
+  const [currency0, setCurrency0] = useState<Currency | null>(Currency.ETHER)
   const [currency1, setCurrency1] = useState<Currency | null>(null)
 
   const [pairState, pair] = usePair(currency0 ?? undefined, currency1 ?? undefined)
+  console.log(usePair(currency0 ?? undefined, currency1 ?? undefined), 'pair')
   const addPair = usePairAdder()
   useEffect(() => {
     if (pair) {
@@ -70,9 +71,7 @@ export default function PoolFinder() {
 
   const prerequisiteMessage = (
     <LightCard padding="45px 10px">
-      <Text textAlign="center">
-        {!account ? '连接到钱包以查找池' : '选择一个代币来查找您的流动性'}
-      </Text>
+      <Text textAlign="center">{!account ? '连接到钱包以查找池' : '选择一个代币来查找您的流动性'}</Text>
     </LightCard>
   )
 
@@ -161,7 +160,7 @@ export default function PoolFinder() {
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
                 <Text textAlign="center" fontWeight={500}>
-                  Invalid pair.
+                  无效对.
                 </Text>
               </AutoColumn>
             </LightCard>
@@ -169,7 +168,7 @@ export default function PoolFinder() {
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
                 <Text textAlign="center">
-                  Loading
+                  正在加载
                   <Dots />
                 </Text>
               </AutoColumn>

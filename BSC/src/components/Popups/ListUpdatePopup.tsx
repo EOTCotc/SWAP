@@ -7,7 +7,7 @@ import { AppDispatch } from '../../state'
 import { useRemovePopup } from '../../state/application/hooks'
 import { acceptListUpdate } from '../../state/lists/actions'
 import { TYPE } from '../../theme'
-import listVersionLabel from '../../utils/listVersionLabel'
+// import listVersionLabel from '../../utils/listVersionLabel'
 import { ButtonSecondary } from '../Button'
 import { AutoColumn } from '../Column'
 import { AutoRow } from '../Row'
@@ -54,8 +54,8 @@ export default function ListUpdatePopup({
       <AutoColumn style={{ flex: '1' }} gap="8px">
         {auto ? (
           <TYPE.body fontWeight={500}>
-            The token list &quot;{oldList.name}&quot; has been updated to{' '}
-            <strong>{listVersionLabel(newList.version)}</strong>.
+            {/* The token list &quot;{oldList.name}&quot; has been updated to{' '}
+            <strong>{listVersionLabel(newList.version)}</strong>. */}
           </TYPE.body>
         ) : (
           <>
@@ -73,7 +73,7 @@ export default function ListUpdatePopup({
                         {i === tokensAdded.length - 1 ? null : ', '}
                       </React.Fragment>
                     ))}{' '}
-                    added
+                    添加
                   </li>
                 ) : null}
                 {tokensRemoved.length > 0 ? (
@@ -84,18 +84,18 @@ export default function ListUpdatePopup({
                         {i === tokensRemoved.length - 1 ? null : ', '}
                       </React.Fragment>
                     ))}{' '}
-                    removed
+                    移除
                   </li>
                 ) : null}
-                {numTokensChanged > 0 ? <li>{numTokensChanged} tokens updated</li> : null}
+                {numTokensChanged > 0 ? <li>{numTokensChanged} 令牌已更新</li> : null}
               </ul>
             </div>
             <AutoRow>
               <div style={{ flexGrow: 1, marginRight: 12 }}>
-                <ButtonSecondary onClick={handleAcceptUpdate}>Accept update</ButtonSecondary>
+                <ButtonSecondary onClick={handleAcceptUpdate}>接受更新</ButtonSecondary>
               </div>
               <div style={{ flexGrow: 1 }}>
-                <ButtonSecondary onClick={removeThisPopup}>拒绝交易</ButtonSecondary>
+                <ButtonSecondary onClick={removeThisPopup}>拒绝更新</ButtonSecondary>
               </div>
             </AutoRow>
           </>

@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react'
 import { HelpCircle as Question } from 'react-feather'
 import styled from 'styled-components'
-import Tooltip from '../Tooltip'
+import lpimg from '../../assets/images/lp.png'
+import Tooltip, { TooltipLp } from '../Tooltip'
 
 const QuestionWrapper = styled.div`
   display: flex;
@@ -21,7 +22,11 @@ const QuestionWrapper = styled.div`
     opacity: 0.7;
   }
 `
-
+const Lpimg = styled.img`
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+`
 export default function QuestionHelper({ text }: { text: string }) {
   const [show, setShow] = useState<boolean>(false)
 
@@ -35,6 +40,28 @@ export default function QuestionHelper({ text }: { text: string }) {
           <Question size={16} />
         </QuestionWrapper>
       </Tooltip>
+    </span>
+  )
+}
+export function LpHelper({ text }: { text: any }) {
+  const [show, setShow] = useState<boolean>(false)
+
+  const open = useCallback(
+    e => {
+      e.stopPropagation()
+      setShow(true)
+    },
+    [setShow]
+  )
+  const close = useCallback(() => setShow(false), [setShow])
+
+  return (
+    <span style={{ marginLeft: 4 }}>
+      <TooltipLp text={text} show={show}>
+        <QuestionWrapper onClick={open} onMouseEnter={open} onMouseLeave={close}>
+          <Lpimg src={lpimg} />
+        </QuestionWrapper>
+      </TooltipLp>
     </span>
   )
 }

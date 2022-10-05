@@ -144,7 +144,6 @@ export function useDerivedMintInfo(
   }
 
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
-
   if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
     error = currencies[Field.CURRENCY_A]?.symbol + ' 余额不足'
     // error = 'Insufficient ' + currencies[Field.CURRENCY_A]?.symbol + ' balance'

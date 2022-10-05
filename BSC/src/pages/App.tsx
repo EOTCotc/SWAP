@@ -1,12 +1,17 @@
-import React, { Suspense } from 'react'
+import { Currency } from 'eotc-bscswap-sdk'
+import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
 import Popups from '../components/Popups'
 import Web3ReactManager from '../components/Web3ReactManager'
+import { getChainInfo } from '../constants/chainInfo'
+import { useActiveWeb3React } from '../hooks'
+import 'react-vant/lib/index.css'
 import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import AddLiquidity from './AddLiquidity'
+// import { useAggregation } from '../hooks/useAggregation'
 import {
   RedirectDuplicateTokenIds,
   RedirectOldAddLiquidityPathStructure,
@@ -20,6 +25,7 @@ import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
+import Mining from './Mining'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
 
 const AppWrapper = styled.div`
@@ -58,6 +64,15 @@ const Marginer = styled.div`
 `
 
 export default function App() {
+  // useAggregation()
+
+  const { chainId } = useActiveWeb3React()
+  useEffect(() => {
+    const nativeCurrency = getChainInfo(chainId)?.nativeCurrency
+    if (nativeCurrency) {
+      Currency.setETHER(nativeCurrency.decimals, nativeCurrency.symbol, nativeCurrency.name)
+    }
+  }, [chainId])
   return (
     <Suspense fallback={null}>
       <HashRouter>
@@ -85,6 +100,7 @@ export default function App() {
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                 <Route exact strict path="/migrate/v1" component={MigrateV1} />
                 <Route exact strict path="/migrate/v1/:address" component={MigrateV1Exchange} />
+                <Route path="/mining" component={Mining} />
                 <Route component={RedirectPathToSwapOnly} />
               </Switch>
             </Web3ReactManager>

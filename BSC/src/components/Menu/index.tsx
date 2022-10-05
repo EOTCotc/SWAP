@@ -22,7 +22,7 @@ const StyledMenuButton = styled.button`
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;  
+  height: 35px;
 
   padding: 0.15rem 0.3rem;
   border-radius: 0.5rem;
@@ -49,9 +49,9 @@ const StyledMenu = styled.div`
   text-align: left;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    position: absolute;
-    left: 15px;
-    top: 25px;
+    // position: absolute;
+    // left: 15px;
+    // top: 25px;
   `};
 `
 // min-width: 8.125rem;
@@ -75,7 +75,7 @@ const MenuFlyout = styled.span`
   z-index: 9999;
   left: 0;
   top: 0;
-  background-color:${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.bg6};
   flex-direction: column;
 `
 
@@ -87,9 +87,9 @@ const MenuTitle = styled.div`
 `
 
 const MenuClose = styled.div`
-  font-size:34px;
-  cursor:pointer;
-  color:${({ theme }) => theme.text1};
+  font-size: 34px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text1};
 `
 
 const MenuItem = styled(ExternalLink)`
@@ -128,7 +128,10 @@ export default function Menu() {
       {open && (
         <MenuFlyout>
           <MenuTitle>
-            <div> <img src={eotcLogo} alt="" style={{width:'30px',height:'30px'}}/></div>
+            <div>
+              {' '}
+              <img src={eotcLogo} alt="" style={{ width: '30px', height: '30px' }} />
+            </div>
             <MenuClose onClick={toggle}>×</MenuClose>
           </MenuTitle>
           <div>
@@ -144,7 +147,7 @@ export default function Menu() {
               {/* <MessageCircle size={14} /> */}
               去中心化OTC交易所
             </MenuItem>
-            <MenuItem id="link" target='_blank' href="#!">
+            <MenuItem id="link" target="_blank" href="#!">
               {/* <Code size={14} /> */}
               去中心化借贷交易所
             </MenuItem>
@@ -158,7 +161,7 @@ export default function Menu() {
             </MenuItem>
             <MenuItem id="link" href="#!">
               {/* <PieChart size={14} /> */}
-            去中心化应用系统
+              去中心化应用系统
             </MenuItem>
             <MenuItem id="link" href="https://nft.eotc.im/#/index/nft_home">
               {/* <PieChart size={14} /> */}

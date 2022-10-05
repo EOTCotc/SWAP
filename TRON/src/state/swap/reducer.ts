@@ -1,5 +1,13 @@
 import { createReducer } from '@reduxjs/toolkit'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
+import {
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setRecipient,
+  switchCurrencies,
+  typeInput,
+  setDexName
+} from './actions'
 
 export interface SwapState {
   readonly independentField: Field
@@ -25,7 +33,17 @@ const initialState: SwapState = {
   },
   recipient: null
 }
-
+interface DexNameState {
+  readonly dexName: string | null
+}
+const initDexName: DexNameState = {
+  dexName: ''
+}
+export const dexNameState = createReducer<DexNameState>(initDexName, builder =>
+  builder.addCase(setDexName, (state, { payload: { dexName } }) => {
+    state.dexName = dexName
+  })
+)
 export default createReducer<SwapState>(initialState, builder =>
   builder
     .addCase(

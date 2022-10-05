@@ -1,10 +1,10 @@
 import { AddressZero } from '@ethersproject/constants'
+import { Trades } from '../constants'
 import {
   BigintIsh,
   Currency,
   CurrencyAmount,
   currencyEquals,
-  ETHER,
   JSBI,
   Pair,
   Percent,
@@ -15,6 +15,7 @@ import {
   TradeType,
   WETH
 } from 'eotc-bscswap-sdk'
+// import { TradeList } from '../hooks/Trades'
 import { useMemo } from 'react'
 import { useActiveWeb3React } from '../hooks'
 import { useAllTokens } from '../hooks/Tokens'
@@ -22,6 +23,7 @@ import { useV1FactoryContract } from '../hooks/useContract'
 import { Version } from '../hooks/useToggledVersion'
 import { NEVER_RELOAD, useSingleCallResult, useSingleContractMultipleData } from '../state/multicall/hooks'
 import { useETHBalances, useTokenBalance, useTokenBalances } from '../state/wallet/hooks'
+import { computeTradePriceBreakdown, warningSeverity } from '../utils/prices'
 
 export function useV1ExchangeAddress(tokenAddress?: string): string | undefined {
   const contract = useV1FactoryContract()
@@ -111,8 +113,8 @@ export function useV1Trade(
   const inputPair = useMockV1Pair(inputCurrency)
   const outputPair = useMockV1Pair(outputCurrency)
 
-  const inputIsETH = inputCurrency === ETHER
-  const outputIsETH = outputCurrency === ETHER
+  const inputIsETH = inputCurrency === Currency.ETHER
+  const outputIsETH = outputCurrency === Currency.ETHER
 
   // construct a direct or through ETH v1 route
   let pairs: Pair[] = []
@@ -166,6 +168,7 @@ const ZERO_PERCENT = new Percent('0')
 const ONE_HUNDRED_PERCENT = new Percent('1')
 
 // returns whether tradeB is better than tradeA by at least a threshold percentage amount
+// 评估交易b是否比交易a至少好一个百分比
 export function isTradeBetter(
   tradeA: Trade | undefined,
   tradeB: Trade | undefined,
@@ -180,12 +183,29 @@ export function isTradeBetter(
     !currencyEquals(tradeA.inputAmount.currency, tradeB.inputAmount.currency) ||
     !currencyEquals(tradeB.outputAmount.currency, tradeB.outputAmount.currency)
   ) {
+    // 交易不能比较
     throw new Error('Trades are not comparable')
   }
 
   if (minimumDelta.equalTo(ZERO_PERCENT)) {
+    // A价格小于B价格
     return tradeA.executionPrice.lessThan(tradeB.executionPrice)
   } else {
     return tradeA.executionPrice.raw.multiply(minimumDelta.add(ONE_HUNDRED_PERCENT)).lessThan(tradeB.executionPrice)
   }
+}
+export function tradeBetterSort(Trades: Trades): Trades {
+  if (Trades.length <= 0) return Trades
+  return Trades.sort((TradeA, TradeB) => {
+    return isTradeBetter(TradeA.trade, TradeB.trade) ? 1 : -1
+  })
+}
+export function filtrTrades(Trades: Trades): Trades {
+  if (Trades.length <= 0) return Trades
+  return Trades.filter(item => {
+    const trade = item.trade
+    const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
+    const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
+    return priceImpactSeverity < 4
+  })
 }

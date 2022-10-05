@@ -18,6 +18,32 @@ const Tabs = styled.div`
 
 const activeClassName = 'ACTIVE'
 
+const StyledNavLinkMining = styled(NavLink).attrs({
+  activeClassName
+})`
+  ${({ theme }) => theme.flexRowNoWrap}
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: ${({ theme }) => theme.text3};
+  font-size: 14px;
+  font-weight: 400;
+  width: 85px;
+  height: 2.75rem;
+  &.${activeClassName} {
+    font-weight: 500;
+    background: #237ff8;
+    color: ${({ theme }) => theme.white};
+  }
+
+  :hover,
+  :focus {
+    color: ${({ theme }) => darken(0.1, theme.text1)};
+  }
+`
 const StyledNavLink = styled(NavLink).attrs({
   activeClassName
 })`
@@ -31,7 +57,6 @@ const StyledNavLink = styled(NavLink).attrs({
   text-decoration: none;
   color: ${({ theme }) => theme.text3};
   font-size: 20px;
-
   &.${activeClassName} {
     border-radius: 12px;
     font-weight: 500;
@@ -52,12 +77,20 @@ const ActiveText = styled.div`
 const StyledArrowLeft = styled(ArrowLeft)`
   color: ${({ theme }) => theme.text1};
 `
-
+const _MiningTabs = styled(Tabs)`
+  background: ${({ theme }) => theme.color1};
+  border-radius: 0.5rem;
+`
 export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
   const { t } = useTranslation()
   return (
     <Tabs style={{ marginBottom: '20px' }}>
-      <StyledNavLink style={{margin:'0 50px 0 10px'}}  id={`swap-nav-link`} to={'/swap'} isActive={() => active === 'swap'} >
+      <StyledNavLink
+        style={{ margin: '0 50px 0 10px' }}
+        id={`swap-nav-link`}
+        to={'/swap'}
+        isActive={() => active === 'swap'}
+      >
         {t('swap')}
       </StyledNavLink>
       <StyledNavLink id={`pool-nav-link`} to={'/pool'} isActive={() => active === 'pool'}>
@@ -75,7 +108,7 @@ export function FindPoolTabs() {
           <StyledArrowLeft />
         </HistoryLink>
         <ActiveText>增加流动性</ActiveText>
-        <QuestionHelper text={"使用此工具查找不会自动出现在界面中的代币对。"} />
+        <QuestionHelper text={'使用此工具查找不会自动出现在界面中的代币对。'} />
       </RowBetween>
     </Tabs>
   )
@@ -88,7 +121,7 @@ export function AddRemoveTabs({ adding }: { adding: boolean }) {
         <HistoryLink to="/pool">
           <StyledArrowLeft />
         </HistoryLink>
-        <ActiveText>{adding ? '增加' : '移除'} 流动性</ActiveText>
+        <ActiveText>{adding ? '增加' : '移除'}流动性</ActiveText>
         <QuestionHelper
           text={
             adding
@@ -98,5 +131,17 @@ export function AddRemoveTabs({ adding }: { adding: boolean }) {
         />
       </RowBetween>
     </Tabs>
+  )
+}
+export function MiningTabs({ active }: { active: 'stake' | 'unstake' }) {
+  return (
+    <_MiningTabs>
+      <StyledNavLinkMining id={`mining-stake-nav-link`} to={'/mining/stake'} isActive={() => active === 'stake'}>
+        质押
+      </StyledNavLinkMining>
+      <StyledNavLinkMining id={`mining-unstake-nav-link`} to={'/mining/unstake'} isActive={() => active === 'unstake'}>
+        赎回
+      </StyledNavLinkMining>
+    </_MiningTabs>
   )
 }

@@ -32,9 +32,7 @@ export default function TransactionPopup({
       </div>
       <AutoColumn gap="8px">
         <TYPE.body fontWeight={500}>{summary ?? 'Hash: ' + hash.slice(0, 8) + '...' + hash.slice(58, 65)}</TYPE.body>
-        {chainId && (
-          <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>在Bscscan上查看</ExternalLink>
-        )}
+        {chainId && <ExternalLink href={getEtherscanLink(chainId, hash, 'transaction')}>在Bscscan上查看</ExternalLink>}
       </AutoColumn>
     </RowNoFlex>
   )
