@@ -120,8 +120,8 @@ const NetworkIcon = styled(Activity)`
 `
 
 const WalletImg = styled.img`
-  width:16px;
-  height:16px;
+  width: 16px;
+  height: 16px;
 `
 
 // we want the latest one to come first, so return negative if a is after b
@@ -167,7 +167,7 @@ const SOCK = (
 //   return null
 // }
 
-// connector, 
+// connector,
 function Web3StatusInner() {
   const { t } = useTranslation()
   const { account, error } = useWeb3React()
@@ -192,7 +192,7 @@ function Web3StatusInner() {
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>{pending?.length} Pending</Text> <Loader stroke="white" />
+            <Text>{pending?.length} 等待</Text> <Loader stroke="white" />
           </RowBetween>
         ) : (
           <>
@@ -207,7 +207,7 @@ function Web3StatusInner() {
     return (
       <Web3StatusError onClick={toggleWalletModal}>
         <NetworkIcon />
-        <Text>{error instanceof UnsupportedChainIdError ? 'Wrong Network' : 'Error'}</Text>
+        <Text>{error instanceof UnsupportedChainIdError ? '错误的网络' : '错误'}</Text>
       </Web3StatusError>
     )
   } else {

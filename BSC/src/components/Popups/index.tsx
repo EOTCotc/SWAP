@@ -38,7 +38,7 @@ const FixedPopupColumn = styled(AutoColumn)`
   z-index: 2;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    display: none;
+    display: none; 
   `};
 `
 

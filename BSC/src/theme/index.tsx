@@ -16,6 +16,16 @@ const MEDIA_WIDTHS = {
   upToExtraSmall: 500,
   upToSmall: 600,
   upToMedium: 960,
+  upToLarge: 1280,
+  upToMoreSmall: 400
+}
+export const MEDIA_WIDTHSV3 = {
+  upToExtraSmall: 500,
+
+  upToSmall: 720,
+
+  upToMedium: 960,
+
   upToLarge: 1280
 }
 
@@ -46,8 +56,14 @@ export function colors(darkMode: boolean): Colors {
     text3: darkMode ? '#888D9B' : '#6C7284',
     text4: darkMode ? '#C3C5CB' : '#565A69',
     text5: darkMode ? '#EDEEF2' : '#2C2F36',
+    text6: darkMode ? '##F3F4F5' : '##8C8E95',
+    text7: darkMode ? '#333333' : '#ffffff',
+    text8: darkMode ? '#999' : '#90939B',
+    text9: darkMode ? '#E6B37C' : '#E6B37C',
+    text10: darkMode ? '#F19635' : '#E6B37C',
 
     // backgrounds / greys
+    bg0: darkMode ? '#FFF' : '#191B1F',
     bg1: darkMode ? '#FFFFFF' : '#0A0C19',
     bg2: darkMode ? '#F8F5FD' : '#0E1530',
     bg3: darkMode ? '#EDEEF2' : '#40444F',
@@ -55,10 +71,18 @@ export function colors(darkMode: boolean): Colors {
     bg5: darkMode ? '#888D9B' : '#6C7284',
     bg6: darkMode ? '#ffffff' : '#101B39',
     bg7: darkMode ? '#f1f1f1' : '#313f61',
+    bg8: darkMode ? '#ffffff' : '##0a0c19',
+    bg9: darkMode ? '#ffffff' : '#212637',
+    bg10: darkMode ? '#8AB9F6' : '#1D4D91',
+    bg11: darkMode ? '#F5F5F5' : '#1A1B27',
+    bg12: darkMode ? '#FAF0E5' : '#333136',
+    bg13: darkMode ? '#E8F2FF' : '#1E3157',
+    color1: darkMode ? '#F3F4F5' : '#191c2a',
+    color2: darkMode ? '#2B3143' : 'rgba(255,255,255,0)',
 
     //specialty colors
     modalBG: darkMode ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,.425)',
-    advancedBG: darkMode ?  'rgba(255,255,255,0.6)' :'rgba(0,0,0,0.1)',
+    advancedBG: darkMode ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.1)',
 
     //primary colors
     primary1: darkMode ? '#ff007a' : '#2172E5',
@@ -215,10 +239,6 @@ body {
   min-height: 100vh;
   background-position: 0 -30vh;
   background-repeat: no-repeat;
-  background-image: ${({ theme }) =>
-    `radial-gradient(50% 50% at 50% 50%, ${transparentize(
-      1,
-      theme.bg1
-    )} 100%)`};
+  background-image: ${({ theme }) => `radial-gradient(50% 50% at 50% 50%, ${transparentize(1, theme.bg1)} 100%)`};
 }
 `

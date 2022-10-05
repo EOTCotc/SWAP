@@ -14,7 +14,7 @@ const PORTIS_ID = process.env.REACT_APP_PORTIS_ID
 export const NETWORK_CHAIN_ID: number = parseInt(process.env.REACT_APP_CHAIN_ID ?? '1')
 
 if (typeof NETWORK_URL === 'undefined') {
-  throw new Error(`REACT_APP_NETWORK_URL must be a defined environment variable`)
+  throw new Error(`REACT_APP_NETWORK_URL 必须是已定义的环境变量`)
 }
 
 export const network = new NetworkConnector({
@@ -35,6 +35,8 @@ export const walletconnect = new WalletConnectConnector({
   rpc: { 56: NETWORK_URL },
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
   pollingInterval: 15000
 })
 

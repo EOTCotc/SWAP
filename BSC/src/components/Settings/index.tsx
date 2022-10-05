@@ -49,7 +49,7 @@ const StyledMenuButton = styled.button`
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;  
+  height: 35px;
 
   padding: 0.15rem 0.5rem;
   border-radius: 0.5rem;
@@ -82,9 +82,9 @@ const StyledMenu = styled.div`
   text-align: left;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    position: absolute;
-    top: 28px;
-    right: 20px;
+    // position: absolute;
+    // top: 28px;
+    // right: 20px;
   `};
 `
 
@@ -154,30 +154,30 @@ export default function SettingsTab() {
             <RowBetween style={{ padding: '0 2rem' }}>
               <div />
               <Text fontWeight={500} fontSize={20}>
-                Are you sure?
+                你确定吗？
               </Text>
               <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
             </RowBetween>
             <Break />
             <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
               <Text fontWeight={500} fontSize={20}>
-              专家模式关闭确认交易提示，并允许经常出现的高滑动交易糟糕的利率和资金损失。
+                专家模式关闭确认交易提示，并允许经常出现的高滑动交易糟糕的利率和资金损失。
               </Text>
               <Text fontWeight={600} fontSize={20}>
-                ONLY USE THIS MODE IF YOU KNOW WHAT YOU ARE DOING.
+                仅当您知道自己在做什么时才使用此模式。
               </Text>
               <ButtonError
                 error={true}
                 padding={'12px'}
                 onClick={() => {
-                  if (window.prompt(`Please type the word "confirm" to enable expert mode.`) === 'confirm') {
+                  if (window.prompt(`请输入 "confirm" 一词以启用专家模式。`) === 'confirm') {
                     toggleExpertMode()
                     setShowConfirmation(false)
                   }
                 }}
               >
                 <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
-                打开专家模式
+                  打开专家模式
                 </Text>
               </ButtonError>
             </AutoColumn>

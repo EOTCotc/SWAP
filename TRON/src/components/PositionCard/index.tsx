@@ -26,7 +26,7 @@ export const FixedHeightRow = styled(RowBetween)`
   height: 24px;
 `
 export const FixedHeightRow2 = styled(RowBetween)`
-  height:24px;
+  height: 24px;
   ${({ theme }) => theme.mediaWidth.upToMoreSmall`
     display:flex;
     height:40px;
@@ -91,7 +91,7 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
               </RowFixed>
               <RowFixed>
                 <Text fontWeight={500} fontSize={20}>
-                  {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                  {userPoolBalance ? userPoolBalance.multiply('1000000000000').toSignificant(4) : '-'}
                 </Text>
               </RowFixed>
             </FixedHeightRow2>
@@ -220,7 +220,7 @@ export default function FullPositionCard({ pair, border }: PositionCardProps) {
                 您的池代币:
               </Text>
               <Text fontSize={16} fontWeight={500}>
-                {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}
+                {userPoolBalance ? userPoolBalance.multiply('1000000000000').toSignificant(4) : '-'}
               </Text>
             </FixedHeightRow>
             <FixedHeightRow>

@@ -149,7 +149,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-          滑点容差
+            滑点容差
           </TYPE.black>
           <QuestionHelper text="如果兑换率变动超过此百分比，则将还原该交易。" />
         </RowFixed>
@@ -226,7 +226,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-          交易截止期限
+            交易截止期限
           </TYPE.black>
           <QuestionHelper text="如果您的交易待处理超过此时间限制，则将还原该交易。" />
         </RowFixed>

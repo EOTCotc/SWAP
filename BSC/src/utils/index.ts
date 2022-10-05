@@ -3,11 +3,12 @@ import { getAddress } from '@ethersproject/address'
 import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
-import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ROUTER_ADDRESS } from '../constants'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'eotc-bscswap-sdk'
+import IUniswapV2Router02ABIJSON from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
+import { AGGREGATION_ADDRESS, CONTRACTS } from '../constants'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency } from 'eotc-bscswap-sdk'
 import { TokenAddressMap } from '../state/lists/hooks'
-
+import IAggregationABI from '../constants/abis/IAggregationABI.json'
+const { abi: IUniswapV2Router02ABI } = IUniswapV2Router02ABIJSON
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
   try {
@@ -96,7 +97,15 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 
 // account is optional
 export function getRouterContract(_: number, library: Web3Provider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS, IUniswapV2Router02ABI, library, account)
+  const routerAddress = CONTRACTS[_]['EOTC'].ROUTER
+  return getContract(routerAddress, IUniswapV2Router02ABI, library, account)
+  // return getContract(ROUTER_ADDRESS, IUniswapV2Router02ABI, library, account)
+}
+export function getRouterContractPro(_: number, library: Web3Provider, account?: string, dexName = 'EOTC'): Contract {
+  return getContract(CONTRACTS[_][dexName].ROUTER, IUniswapV2Router02ABI, library, account)
+}
+export function getAggregationContract(chainId: number, library: Web3Provider, account?: string): Contract {
+  return getContract(AGGREGATION_ADDRESS, IAggregationABI, library, account)
 }
 
 export function escapeRegExp(string: string): string {
@@ -104,6 +113,6 @@ export function escapeRegExp(string: string): string {
 }
 
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
-  if (currency === ETHER) return true
+  if (currency === Currency.ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }

@@ -127,6 +127,7 @@ interface CurrencyInputPanelProps {
   otherCurrency?: Currency | null
   id: string
   showCommonBases?: boolean
+  showInput?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -143,7 +144,8 @@ export default function CurrencyInputPanel({
   hideInput = false,
   otherCurrency,
   id,
-  showCommonBases
+  showCommonBases,
+  showInput = true
 }: CurrencyInputPanelProps) {
   // const { t } = useTranslation()
 
@@ -218,7 +220,7 @@ export default function CurrencyInputPanel({
               {!disableCurrencySelect && <StyledDropDown selected={!!currency} />}
             </Aligner>
           </CurrencySelect>
-          {!hideInput && (
+          {!hideInput && showInput && (
             <>
               <NumericalInput
                 className="token-amount-input"
@@ -230,7 +232,9 @@ export default function CurrencyInputPanel({
               {/* && (
                 <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
               ) */}
-              {account && currency && showMaxButton && label !== 'To' && (<StyledBalanceMax onClick={onMax}>全部</StyledBalanceMax>)}
+              {account && currency && showMaxButton && label !== 'To' && (
+                <StyledBalanceMax onClick={onMax}>全部</StyledBalanceMax>
+              )}
             </>
           )}
         </InputRow>

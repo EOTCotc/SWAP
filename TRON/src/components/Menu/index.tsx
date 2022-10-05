@@ -6,7 +6,7 @@ import { ReactComponent as MenuIcon } from '../../assets/images/menu2.svg'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useToggle from '../../hooks/useToggle'
 import eotcLogo from '../../assets/images/eotclogo.png'
-import { ExternalLink } from '../../theme'
+// import { ExternalLink } from '../../theme'
 
 const StyledMenuIcon = styled(MenuIcon)`
   path {
@@ -22,7 +22,7 @@ const StyledMenuButton = styled.button`
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;  
+  height: 35px;
 
   padding: 0.15rem 0.3rem;
   border-radius: 0.5rem;
@@ -75,7 +75,7 @@ const MenuFlyout = styled.span`
   z-index: 9999;
   left: 0;
   top: 0;
-  background-color:${({ theme }) => theme.bg6};
+  background-color: ${({ theme }) => theme.bg6};
   flex-direction: column;
 `
 
@@ -87,12 +87,12 @@ const MenuTitle = styled.div`
 `
 
 const MenuClose = styled.div`
-  font-size:34px;
-  cursor:pointer;
-  color:${({ theme }) => theme.text1};
+  font-size: 34px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text1};
 `
 
-const MenuItem = styled(ExternalLink)`
+const MenuItem = styled.a`
   flex: 1;
   padding: 0.5rem 0.5rem;
   color: ${({ theme }) => theme.text1};
@@ -101,6 +101,7 @@ const MenuItem = styled(ExternalLink)`
   font-size: 16px;
   border-bottom: 1px solid ${({ theme }) => theme.bg7};
   padding-bottom: 10px;
+  text-decoration: none;
   :hover {
     color: ${({ theme }) => theme.text1};
     cursor: pointer;
@@ -128,71 +129,54 @@ export default function Menu() {
       {open && (
         <MenuFlyout>
           <MenuTitle>
-            <div> <img src={eotcLogo} alt="" style={{width:'30px',height:'30px'}}/></div>
+            <div>
+              {' '}
+              <img src={eotcLogo} alt="" style={{ width: '30px', height: '30px' }} />
+            </div>
             <MenuClose onClick={toggle}>×</MenuClose>
           </MenuTitle>
           <div>
-            <MenuItem id="link" href="https://eotc.im/">
+            <MenuItem href="https://eotc.im/">
               {/* <Info size={14} /> */}
               EOTC官网
             </MenuItem>
-            <MenuItem id="link" href="https://fi.eotc.im/">
+            <MenuItem href="https://fi.eotc.im/">
               {/* <BookOpen size={14} /> */}
               链上理财赚币
             </MenuItem>
-            <MenuItem id="link" href="https://bsc.eotc.im/">
+            <MenuItem href="https://bsc.eotc.im/">
               {/* <MessageCircle size={14} /> */}
               去中心化OTC交易所
             </MenuItem>
-            <MenuItem id="link" target='_blank' href="#!">
+            <MenuItem target="_blank" href="#">
               {/* <Code size={14} /> */}
               去中心化借贷交易所
             </MenuItem>
-            <MenuItem id="link" href="#!">
+            <MenuItem href="#">
               {/* <MessageCircle size={14} /> */}
               去中心化合约交易所
             </MenuItem>
-            <MenuItem id="link" href="#!">
+            <MenuItem href="#">
               {/* <PieChart size={14} /> */}
               DID去中心化身份系统
             </MenuItem>
-            <MenuItem id="link" href="#!">
+            <MenuItem href="#">
               {/* <PieChart size={14} /> */}
-            去中心化应用系统
+              去中心化应用系统
             </MenuItem>
-            <MenuItem id="link" href="https://nft.eotc.im/#/index/nft_home">
+            <MenuItem href="https://nft.eotc.im/#/index/nft_home">
               {/* <PieChart size={14} /> */}
               EOTC NFT
             </MenuItem>
-            <MenuItem id="link" href="#!">
+            <MenuItem href="#">
               {/* <PieChart size={14} /> */}
               EOTC 元宇宙
             </MenuItem>
-            <MenuItem id="link" href="#!">
+            <MenuItem href="#">
               {/* <PieChart size={14} /> */}
               EOTC DAO
             </MenuItem>
           </div>
-          {/* <MenuItem id="link" href="https://uniswap.org/">
-            <Info size={14} />
-            About
-          </MenuItem>
-          <MenuItem id="link" href="https://uniswap.org/docs/v2">
-            <BookOpen size={14} />
-            Docs
-          </MenuItem>
-          <MenuItem id="link" href={CODE_LINK}>
-            <Code size={14} />
-            Code
-          </MenuItem>
-          <MenuItem id="link" href="https://discord.gg/EwFs3Pp">
-            <MessageCircle size={14} />
-            Discord
-          </MenuItem>
-          <MenuItem id="link" href="https://uniswap.info/">
-            <PieChart size={14} />
-            Analytics
-          </MenuItem> */}
         </MenuFlyout>
       )}
     </StyledMenu>

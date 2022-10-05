@@ -1,26 +1,48 @@
 import useENS from '../../hooks/useENS'
 import { Version } from '../../hooks/useToggledVersion'
 import { parseUnits } from '@ethersproject/units'
-import { Currency, CurrencyAmount, ETHER, JSBI, Token, TokenAmount, Trade } from 'eotc-bscswap-sdk'
+import { Currency, CurrencyAmount, JSBI, Pair, Token, TokenAmount, Trade } from 'eotc-bscswap-sdk'
 import { ParsedQs } from 'qs'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useV1Trade } from '../../data/V1'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
-import { useTradeExactIn, useTradeExactOut } from '../../hooks/Trades'
+import { useTradeExactIn, useTradeExactOut, TradeList } from '../../hooks/Trades'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import { isAddress } from '../../utils'
 import { AppDispatch, AppState } from '../index'
 import { useCurrencyBalances } from '../wallet/hooks'
-import { Field, replaceSwapState, selectCurrency, setRecipient, switchCurrencies, typeInput } from './actions'
+import {
+  Field,
+  replaceSwapState,
+  selectCurrency,
+  setDexName,
+  setRecipient,
+  switchCurrencies,
+  typeInput
+} from './actions'
 import { SwapState } from './reducer'
 import useToggledVersion from '../../hooks/useToggledVersion'
 import { useUserSlippageTolerance } from '../user/hooks'
 import { computeSlippageAdjustedAmounts } from '../../utils/prices'
+import { Trades } from '../../constants'
 
 export function useSwapState(): AppState['swap'] {
   return useSelector<AppState, AppState['swap']>(state => state.swap)
+}
+export function useDexNameState() {
+  const dispatch = useDispatch<AppDispatch>()
+  const onDexNameSelection = useCallback(
+    dexName => {
+      return dispatch(setDexName({ dexName }))
+    },
+    [dispatch]
+  )
+  return {
+    selectDexName: useSelector<AppState, AppState['dexNameState']>(state => state.dexNameState).dexName,
+    setDexName: onDexNameSelection
+  }
 }
 
 export function useSwapActionHandlers(): {
@@ -35,8 +57,8 @@ export function useSwapActionHandlers(): {
       dispatch(
         selectCurrency({
           field,
-          // currencyId: currency instanceof Token ? currency.address : currency === ETHER ? 'BNB' : ''
-          currencyId: currency instanceof Token ? currency.address : currency === ETHER ? 'ETH' : ''
+          // currencyId: currency instanceof Token ? currency.address : currency === Currency.ETHER ? 'BNB' : ''
+          currencyId: currency instanceof Token ? currency.address : currency === Currency.ETHER ? 'ETH' : ''
         })
       )
     },
@@ -108,6 +130,7 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 }
 
 // from the current swap inputs, compute the best trade and return it.
+// 从当前的交换输入，计算出最好的交易并返回
 export function useDerivedSwapInfo(): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
@@ -115,6 +138,11 @@ export function useDerivedSwapInfo(): {
   v2Trade: Trade | undefined
   inputError?: string
   v1Trade: Trade | undefined
+  v2TradeList: TradeList | null
+  allowedPairs: {
+    [key: string]: [Pair | null]
+  }
+  v2Trades: Trades
 } {
   const { account } = useActiveWeb3React()
 
@@ -123,9 +151,9 @@ export function useDerivedSwapInfo(): {
   const {
     independentField,
     typedValue,
-    [Field.INPUT]: { currencyId: inputCurrencyId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
-    recipient
+    [Field.INPUT]: { currencyId: inputCurrencyId }, //输入address
+    [Field.OUTPUT]: { currencyId: outputCurrencyId }, //输出address
+    recipient //接收地址
   } = useSwapState()
 
   const inputCurrency = useCurrency(inputCurrencyId)
@@ -137,15 +165,27 @@ export function useDerivedSwapInfo(): {
     inputCurrency ?? undefined,
     outputCurrency ?? undefined
   ])
-
+  // 精确输入 independentField === 'INPUT"
   const isExactIn: boolean = independentField === Field.INPUT
   const parsedAmount = tryParseAmount(typedValue, (isExactIn ? inputCurrency : outputCurrency) ?? undefined)
+  const { TradeList: bestTradeExactInObj, allowedPairs: ExactInAllowedPairs, Trades: exactInTrades } = useTradeExactIn(
+    isExactIn ? parsedAmount : undefined,
+    outputCurrency ?? undefined
+  )
+  const {
+    TradeList: bestTradeExactOutObj,
+    allowedPairs: ExactOutAllowedPairs,
+    Trades: exactOutTrades
+  } = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
 
-  const bestTradeExactIn = useTradeExactIn(isExactIn ? parsedAmount : undefined, outputCurrency ?? undefined)
-  const bestTradeExactOut = useTradeExactOut(inputCurrency ?? undefined, !isExactIn ? parsedAmount : undefined)
-
+  const allowedPairs = isExactIn ? ExactInAllowedPairs : ExactOutAllowedPairs
+  const v2TradeList = isExactIn ? bestTradeExactInObj : bestTradeExactOutObj
+  // console.log(bestTradeExactInObj, 'bestTradeExactInObj')
+  const v2Trades = isExactIn ? exactInTrades : exactOutTrades
+  const bestTradeExactIn = v2Trades[0]?.trade
+  const bestTradeExactOut = v2Trades[0]?.trade
+  console.log(v2Trades[0], 'bestTradeExact')
   const v2Trade = isExactIn ? bestTradeExactIn : bestTradeExactOut
-
   const currencyBalances = {
     [Field.INPUT]: relevantTokenBalances[0],
     [Field.OUTPUT]: relevantTokenBalances[1]
@@ -156,7 +196,7 @@ export function useDerivedSwapInfo(): {
     [Field.OUTPUT]: outputCurrency ?? undefined
   }
 
-  // get link to trade on v1, if a better rate exists
+  // 如果存在更好的汇率，获取v1交易的链接
   const v1Trade = useV1Trade(isExactIn, currencies[Field.INPUT], currencies[Field.OUTPUT], parsedAmount)
 
   let inputError: string | undefined
@@ -186,13 +226,15 @@ export function useDerivedSwapInfo(): {
   }
 
   const [allowedSlippage] = useUserSlippageTolerance()
-
+  //  计算考虑滑点的情况下的输入 v2
   const slippageAdjustedAmounts = v2Trade && allowedSlippage && computeSlippageAdjustedAmounts(v2Trade, allowedSlippage)
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // 计算考虑滑点的情况下的输入 v1
   const slippageAdjustedAmountsV1 =
     v1Trade && allowedSlippage && computeSlippageAdjustedAmounts(v1Trade, allowedSlippage)
 
   // compare input balance to max input based on version
+  // 比较用户的token余额与计算滑点后的输入数量
   const [balanceIn, amountIn] = [
     currencyBalances[Field.INPUT],
     toggledVersion === Version.v1
@@ -204,6 +246,7 @@ export function useDerivedSwapInfo(): {
       : null
   ]
 
+  // 若余额小于计算滑点后的数量 则报错
   if (balanceIn && amountIn && balanceIn.lessThan(amountIn)) {
     inputError = amountIn.currency.symbol + ' 余额不足'
   }
@@ -214,7 +257,10 @@ export function useDerivedSwapInfo(): {
     parsedAmount,
     v2Trade: v2Trade ?? undefined,
     inputError,
-    v1Trade
+    v1Trade,
+    v2TradeList,
+    allowedPairs,
+    v2Trades
   }
 }
 

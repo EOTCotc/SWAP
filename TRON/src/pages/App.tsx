@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Switch, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import GoogleAnalyticsReporter from '../components/analytics/GoogleAnalyticsReporter'
 import Header from '../components/Header'
@@ -20,8 +20,9 @@ import PoolFinder from './PoolFinder'
 import RemoveLiquidity from './RemoveLiquidity'
 import { RedirectOldRemoveLiquidityPathStructure } from './RemoveLiquidity/redirects'
 import Swap from './Swap'
+import Mining from './Mining'
 import { RedirectPathToSwapOnly, RedirectToSwap } from './Swap/redirects'
-
+import 'react-vant/lib/index.css'
 const AppWrapper = styled.div`
   display: flex;
   flex-flow: column;
@@ -35,7 +36,9 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
 `
 
-const BodyWrapper = styled.div`
+const _BodyWrapper = styled.div<{
+  bg?: boolean
+}>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -44,7 +47,11 @@ const BodyWrapper = styled.div`
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  z-index: 10;
+  z-index: -1;
+  //>=768的设备
+  @media (max-width: 768px) {
+    background: ${({ theme, bg }) => (bg ? theme.bg1 : theme.bg8)};
+  }
 
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
       padding: 16px;
@@ -56,7 +63,16 @@ const BodyWrapper = styled.div`
 const Marginer = styled.div`
   margin-top: 5rem;
 `
-
+// eslint-disable-next-line react/prop-types
+function BodyWrapper({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation()
+  const isMining = pathname.startsWith('/mining')
+  return (
+    <>
+      <_BodyWrapper bg={isMining}>{children}</_BodyWrapper>
+    </>
+  )
+}
 export default function App() {
   return (
     <Suspense fallback={null}>
@@ -85,6 +101,7 @@ export default function App() {
                 <Route exact strict path="/remove/:currencyIdA/:currencyIdB" component={RemoveLiquidity} />
                 <Route exact strict path="/migrate/v1" component={MigrateV1} />
                 <Route exact strict path="/migrate/v1/:address" component={MigrateV1Exchange} />
+                <Route path="/mining" component={Mining} />
                 <Route component={RedirectPathToSwapOnly} />
               </Switch>
             </Web3ReactManager>

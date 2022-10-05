@@ -12,8 +12,14 @@ export interface Colors {
   text3: Color
   text4: Color
   text5: Color
+  text6: Color
+  text7: Color
+  text8: Color
+  text9: Color
+  text10: Color
 
   // backgrounds / greys
+  bg0: Color
   bg1: Color
   bg2: Color
   bg3: Color
@@ -21,6 +27,14 @@ export interface Colors {
   bg5: Color
   bg6: Color
   bg7: Color
+  bg8: Color
+  bg9: Color
+  bg10: Color
+  bg11: Color
+  bg12: Color
+  bg13: Color
+  color1: Color
+  color2: Color
 
   modalBG: Color
   advancedBG: Color
@@ -66,7 +80,7 @@ declare module 'styled-components' {
       upToSmall: ThemedCssFunction<DefaultTheme>
       upToMedium: ThemedCssFunction<DefaultTheme>
       upToLarge: ThemedCssFunction<DefaultTheme>
-      upToMoreSmall:ThemedCssFunction<DefaultTheme>
+      upToMoreSmall: ThemedCssFunction<DefaultTheme>
     }
 
     // css snippets

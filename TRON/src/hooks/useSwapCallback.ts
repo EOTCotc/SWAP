@@ -5,17 +5,18 @@ import { useMemo } from 'react'
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { getTradeVersion, useV1TradeExchangeAddress } from '../data/V1'
 import { useTransactionAdder } from '../state/transactions/hooks'
-import { /*calculateGasMargin,*/ getRouterContract, isAddress, shortenAddress } from '../utils'
+import { /*calculateGasMargin, getRouterContract,*/ getRouterContractPro, isAddress, shortenAddress } from '../utils'
 // import isZero from '../utils/isZero'
 import v1SwapArguments from '../utils/v1SwapArguments'
 import { useActiveWeb3React } from './index'
 import { useV1ExchangeContract } from './useContract'
 import useENS from './useENS'
 import { Version } from './useToggledVersion'
+import { fromHex } from 'tron-format-address'
 // import { DEFAULT_FEE_LIMIT } from '../tron-config'
 // import { trigger } from '../utils/blockchain'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { trigger } = require('../utils/blockchain')
+const { swapFunc } = require('../utils/blockchain')
 
 export enum SwapCallbackState {
   INVALID,
@@ -53,7 +54,8 @@ function useSwapCallArguments(
   trade: Trade | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  dexName: string
 ): SwapCall[] {
   const { account, chainId, library } = useActiveWeb3React()
 
@@ -67,7 +69,7 @@ function useSwapCallArguments(
     if (!trade || !recipient || !library || !account || !tradeVersion || !chainId) return []
 
     const contract: Contract | null =
-      tradeVersion === Version.v2 ? getRouterContract(chainId, library, account) : v1Exchange
+      tradeVersion === Version.v2 ? getRouterContractPro(chainId, library, account, dexName) : v1Exchange
     if (!contract) {
       return []
     }
@@ -107,7 +109,7 @@ function useSwapCallArguments(
         break
     }
     return swapMethods.map(parameters => ({ parameters, contract }))
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trade, v1Exchange])
+  }, [account, allowedSlippage, chainId, deadline, dexName, library, recipient, trade, v1Exchange])
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
@@ -116,11 +118,13 @@ export function useSwapCallback(
   trade: Trade | undefined, // trade to execute, required
   allowedSlippage: number = INITIAL_ALLOWED_SLIPPAGE, // in bips
   deadline: number = DEFAULT_DEADLINE_FROM_NOW, // in seconds from now
-  recipientAddressOrName: string | null // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  recipientAddressOrName: string | null, // the ENS name or address of the recipient of the trade, or null if swap should be returned to sender
+  dexName?: string
 ): { state: SwapCallbackState; callback: null | (() => Promise<string>); error: string | null } {
   const { account, chainId, library } = useActiveWeb3React()
 
-  const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
+  // const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
+  const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName, dexName as string)
 
   const addTransaction = useTransactionAdder()
 
@@ -215,23 +219,22 @@ export function useSwapCallback(
           parameters: { methodName, args, value }
           // gasEstimate
         } = swapCalls[0]
-        // console.log(swapCalls[0], 'swapCalls[0]')
-        // console.log(...args, '...args')
-        console.log(contract, 'contract,')
-        const [amountIn, amountOutMin, path, to, deadline] = [...args]
 
-        const functionSelector = 'swapExactTokensForTokens(uint256,uint256,address[],address,uint256)'
-        const parameters = [
-          { type: 'uint256', value: amountIn },
-          { type: 'uint256', value: amountOutMin },
-          { type: 'address[]', value: path },
-          { type: 'address', value: to },
-          { type: 'uint256', value: deadline }
-        ]
-        const options = {}
-        // 路由合约地址
-        return trigger('TLd16U1uzWcfLyQM2CdegTi5i1spRwu4k3', functionSelector, parameters, options)
+        const [amountIn, amountOutMin, path, to, deadline] = [...args]
+        console.log(args)
+        console.log(deadline, 'deadline1')
+        return swapFunc(methodName)({
+          amountIn,
+          amountOut: amountOutMin,
+          dependentValueSunBig: value,
+          path,
+          to,
+          deadline,
+          router2Address: fromHex(contract.address),
+          args
+        })
           .then((response: any) => {
+            console.log(response)
             response.hash = '0x' + response.txid
             const inputSymbol = trade.inputAmount.currency.symbol
             const outputSymbol = trade.outputAmount.currency.symbol
@@ -269,6 +272,56 @@ export function useSwapCallback(
               throw new Error(`交换失败: ${error.message}`)
             }
           })
+
+        // const functionSelector = 'swapExactTokensForTokens(uint256,uint256,address[],address,uint256)'
+        // const parameters = [
+        //   { type: 'uint256', value: amountIn },
+        //   { type: 'uint256', value: amountOutMin },
+        //   { type: 'address[]', value: path },
+        //   { type: 'address', value: to },
+        //   { type: 'uint256', value: deadline }
+        // ]
+        // const options = {}
+        // 路由合约地址
+        // return trigger(fromHex(contract.address), functionSelector, parameters, options)
+        //   .then((response: any) => {
+        //     response.hash = '0x' + response.txid
+        //     const inputSymbol = trade.inputAmount.currency.symbol
+        //     const outputSymbol = trade.outputAmount.currency.symbol
+        //     const inputAmount = trade.inputAmount.toSignificant(3)
+        //     const outputAmount = trade.outputAmount.toSignificant(3)
+
+        //     const base = `用 ${inputAmount} ${inputSymbol} 换 ${outputAmount} ${outputSymbol}`
+        //     const withRecipient =
+        //       recipient === account
+        //         ? base
+        //         : `${base} to ${
+        //             recipientAddressOrName && isAddress(recipientAddressOrName)
+        //               ? shortenAddress(recipientAddressOrName)
+        //               : recipientAddressOrName
+        //           }`
+
+        //     const withVersion =
+        //       tradeVersion === Version.v2 ? withRecipient : `${withRecipient} on ${(tradeVersion as any).toUpperCase()}`
+        //     console.log(withVersion)
+
+        //     addTransaction(response, {
+        //       summary: withVersion
+        //     })
+
+        //     return response.hash
+        //   })
+        //   .catch((error: any) => {
+        //     // if the user rejected the tx, pass this along
+        //     if (error?.code === 4001) {
+        //       throw new Error('交易被拒绝')
+        //     } else {
+        //       console.log(error, 'error')
+        //       // otherwise, the error was unexpected and we need to convey that
+        //       console.error(`交换失败`, error, 'error', methodName, args, value)
+        //       throw new Error(`交换失败: ${error.message}`)
+        //     }
+        //   })
       },
       error: null
     }

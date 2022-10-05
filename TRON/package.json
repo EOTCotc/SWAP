@@ -2,6 +2,7 @@
   "name": "@mcswap/swap-interface",
   "description": "MCSwap Interface",
   "homepage": ".",
+  "proxy": "https://api.eotcyu.club",
   "private": true,
   "devDependencies": {
     "@ethersproject/experimental": "^5.0.1",
@@ -112,8 +113,10 @@
     "@mcswap/mcswap-v2-core": "git+https://github.com/mcswap/mcswap-v2-core.git",
     "@mcswap/mcswap-v2-periphery": "git+https://github.com/mcswap/mcswap-v2-periphery.git",
     "@mcswap/tronlink-provider": "git+https://github.com/mcswap/tronlink-provider.git",
+    "axios": "^0.27.2",
     "ismobilejs": "^1.1.1",
     "jsbi": "^3.1.1",
+    "react-vant": "^1.4.4",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
     "tron-format-address": "^0.1.8",

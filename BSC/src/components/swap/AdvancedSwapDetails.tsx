@@ -14,7 +14,7 @@ import SwapRoute from './SwapRoute'
 
 function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippage: number }) {
   const theme = useContext(ThemeContext)
-  const { priceImpactWithoutFee, realizedLPFee } = computeTradePriceBreakdown(trade)
+  const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
 
@@ -24,7 +24,7 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-              {isExactIn ? '最低收到' : 'Maximum sold'}
+              {isExactIn ? '最低收到' : '最大销售量'}
             </TYPE.black>
             <QuestionHelper text="如果在确认之前出现较大的不利价格变动，您的交易将恢复。" />
           </RowFixed>
@@ -41,24 +41,24 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-            价格影响
+              价格影响
             </TYPE.black>
             <QuestionHelper text="由于交易规模而导致的市场价格和估计价格之间的差异。" />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
         </RowBetween>
 
-        <RowBetween>
+        {/* <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-            流动性供应商费用
+              流动性供应商费用
             </TYPE.black>
             <QuestionHelper text="每笔交易的一部分（0.30%）作为协议激励流向流动性提供者。" />
           </RowFixed>
           <TYPE.black fontSize={14} color={theme.text1}>
             {realizedLPFee ? `${realizedLPFee.toSignificant(4)} ${trade.inputAmount.currency.symbol}` : '-'}
           </TYPE.black>
-        </RowBetween>
+        </RowBetween> */}
       </AutoColumn>
     </>
   )
@@ -67,12 +67,12 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
 export interface AdvancedSwapDetailsProps {
   trade?: Trade
 }
-
+// 交易详情
 export function AdvancedSwapDetails({ trade }: AdvancedSwapDetailsProps) {
   const theme = useContext(ThemeContext)
-
+  // 用户允许的滑点
   const [allowedSlippage] = useUserSlippageTolerance()
-
+  // 显示路由路径
   const showRoute = Boolean(trade && trade.route.path.length > 2)
 
   return (
