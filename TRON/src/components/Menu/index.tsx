@@ -7,6 +7,7 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside'
 import useToggle from '../../hooks/useToggle'
 import eotcLogo from '../../assets/images/eotclogo.png'
 // import { ExternalLink } from '../../theme'
+import { useTranslation } from 'react-i18next'
 
 const StyledMenuIcon = styled(MenuIcon)`
   path {
@@ -119,6 +120,7 @@ export default function Menu() {
   const [open, toggle] = useToggle(false)
 
   useOnClickOutside(node, open ? toggle : undefined)
+  const { t } = useTranslation()
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
@@ -138,41 +140,41 @@ export default function Menu() {
           <div>
             <MenuItem href="https://eotc.im/">
               {/* <Info size={14} /> */}
-              EOTC官网
+              {t('text22')}
             </MenuItem>
             <MenuItem href="https://fi.eotc.im/">
               {/* <BookOpen size={14} /> */}
-              链上理财赚币
+              {t('text23')}
             </MenuItem>
-            <MenuItem href="https://bsc.eotc.im/">
+            <MenuItem href="https://trx.eotc.im/">
               {/* <MessageCircle size={14} /> */}
-              去中心化OTC交易所
+              {t('text24')}
             </MenuItem>
             <MenuItem target="_blank" href="#">
               {/* <Code size={14} /> */}
-              去中心化借贷交易所
+              {t('text25')}
             </MenuItem>
             <MenuItem href="#">
               {/* <MessageCircle size={14} /> */}
-              去中心化合约交易所
+              {t('text26')}
+            </MenuItem>
+            <MenuItem href="https://did.eotc.im">
+              {/* <PieChart size={14} /> */}
+              {t('text27')}
             </MenuItem>
             <MenuItem href="#">
               {/* <PieChart size={14} /> */}
-              DID去中心化身份系统
+              {t('text28')}
             </MenuItem>
-            <MenuItem href="#">
-              {/* <PieChart size={14} /> */}
-              去中心化应用系统
-            </MenuItem>
-            <MenuItem href="https://nft.eotc.im/#/index/nft_home">
+            <MenuItem href="https://nft.eotc.im/">
               {/* <PieChart size={14} /> */}
               EOTC NFT
             </MenuItem>
             <MenuItem href="#">
               {/* <PieChart size={14} /> */}
-              EOTC 元宇宙
+              {t('text29')}
             </MenuItem>
-            <MenuItem href="#">
+            <MenuItem href="https://dao.eotc.im">
               {/* <PieChart size={14} /> */}
               EOTC DAO
             </MenuItem>

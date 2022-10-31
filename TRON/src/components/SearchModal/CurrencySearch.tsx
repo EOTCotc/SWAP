@@ -22,6 +22,7 @@ import SortButton from './SortButton'
 import { useTokenComparator } from './sorting'
 import { PaddedColumn, SearchInput, Separator } from './styleds'
 import AutoSizer from 'react-virtualized-auto-sizer'
+import { useTranslation } from 'react-i18next'
 
 interface CurrencySearchProps {
   isOpen: boolean
@@ -45,7 +46,7 @@ export function CurrencySearch({
   // const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
-
+  const { t } = useTranslation()
   const fixedList = useRef<FixedSizeList>()
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [invertSearchOrder, setInvertSearchOrder] = useState<boolean>(false)
@@ -142,8 +143,8 @@ export function CurrencySearch({
       <PaddedColumn gap="14px">
         <RowBetween>
           <Text fontWeight={500} fontSize={16}>
-            选择代币
-            <QuestionHelper text="通过搜索代币的名称或符号将其地址粘贴到下面来查找代币" />
+            {t('selectToken')}
+            <QuestionHelper text={t('selectQuestionHelper')} />
           </Text>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
@@ -151,7 +152,7 @@ export function CurrencySearch({
         <SearchInput
           type="text"
           id="token-search-input"
-          placeholder="搜索名称或粘贴地址"
+          placeholder={t('searchOrPaste')}
           value={searchQuery}
           ref={inputRef as RefObject<HTMLInputElement>}
           onChange={handleInput}
@@ -162,7 +163,7 @@ export function CurrencySearch({
         )}
         <RowBetween>
           <Text fontSize={14} fontWeight={500}>
-            代币名称
+            {t('tokenName')}
           </Text>
           <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
         </RowBetween>
@@ -206,7 +207,7 @@ export function CurrencySearch({
             onClick={onChangeList}
             id="currency-search-change-list-button"
           >
-            {selectedListInfo.current ? '切换' : '选择列表'}
+            {selectedListInfo.current ? t('switch') : t('selectList')}
           </LinkStyledButton>
         </RowBetween>
       </Card>

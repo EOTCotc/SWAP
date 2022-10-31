@@ -2,6 +2,7 @@ import { diffTokenLists, TokenList } from '@uniswap/token-lists'
 import React, { useCallback, useMemo } from 'react'
 import ReactGA from 'react-ga'
 import { useDispatch } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 // import { Text } from 'rebass'
 import { AppDispatch } from '../../state'
 import { useRemovePopup } from '../../state/application/hooks'
@@ -26,6 +27,7 @@ export default function ListUpdatePopup({
   auto: boolean
 }) {
   const removePopup = useRemovePopup()
+  const { t } = useTranslation()
   const removeThisPopup = useCallback(() => removePopup(popKey), [popKey, removePopup])
   const dispatch = useDispatch<AppDispatch>()
 
@@ -73,7 +75,7 @@ export default function ListUpdatePopup({
                         {i === tokensAdded.length - 1 ? null : ', '}
                       </React.Fragment>
                     ))}{' '}
-                    添加
+                    {t('add')}
                   </li>
                 ) : null}
                 {tokensRemoved.length > 0 ? (
@@ -84,18 +86,22 @@ export default function ListUpdatePopup({
                         {i === tokensRemoved.length - 1 ? null : ', '}
                       </React.Fragment>
                     ))}{' '}
-                    移除
+                    {t('remove')}
                   </li>
                 ) : null}
-                {numTokensChanged > 0 ? <li>{numTokensChanged} 令牌已更新</li> : null}
+                {numTokensChanged > 0 ? (
+                  <li>
+                    {numTokensChanged} {t('tokenUpdated')}
+                  </li>
+                ) : null}
               </ul>
             </div>
             <AutoRow>
               <div style={{ flexGrow: 1, marginRight: 12 }}>
-                <ButtonSecondary onClick={handleAcceptUpdate}>接受更新</ButtonSecondary>
+                <ButtonSecondary onClick={handleAcceptUpdate}>{t('update')}</ButtonSecondary>
               </div>
               <div style={{ flexGrow: 1 }}>
-                <ButtonSecondary onClick={removeThisPopup}>拒绝更新</ButtonSecondary>
+                <ButtonSecondary onClick={removeThisPopup}>{t('refuseToUpdate')}</ButtonSecondary>
               </div>
             </AutoRow>
           </>

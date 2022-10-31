@@ -6,7 +6,7 @@ import TransactionConfirmationModal, {
 } from '../TransactionConfirmationModal'
 import SwapModalFooter from './SwapModalFooter'
 import SwapModalHeader from './SwapModalHeader'
-
+import { useTranslation } from 'react-i18next'
 /**
  * Returns true if the trade requires a confirmation of details before we can submit it
  * @param tradeA trade A
@@ -51,7 +51,7 @@ export default function ConfirmSwapModal({
     () => Boolean(trade && originalTrade && tradeMeaningfullyDiffers(trade, originalTrade)),
     [originalTrade, trade]
   )
-
+  const { t } = useTranslation()
   const modalHeader = useCallback(() => {
     return trade ? (
       <SwapModalHeader
@@ -77,17 +77,20 @@ export default function ConfirmSwapModal({
   }, [allowedSlippage, onConfirm, showAcceptChanges, swapErrorMessage, trade])
 
   // text to show while loading
-  const pendingText = `用 ${trade?.inputAmount?.toSignificant(6)} ${
-    trade?.inputAmount?.currency?.symbol
-  } 换 ${trade?.outputAmount?.toSignificant(6)} ${trade?.outputAmount?.currency?.symbol}`
-
+  // const pendingText = `用 ${trade?.inputAmount?.toSignificant(6)} ${
+  //   trade?.inputAmount?.currency?.symbol
+  // } 换 ${trade?.outputAmount?.toSignificant(6)} ${trade?.outputAmount?.currency?.symbol}`
+  const pendingText = t('text21', {
+    tokenA: `${trade?.inputAmount?.toSignificant(6)} ${trade?.inputAmount?.currency?.symbol}`,
+    tokenB: `${trade?.outputAmount?.toSignificant(6)} ${trade?.outputAmount?.currency?.symbol}`
+  })
   const confirmationContent = useCallback(
     () =>
       swapErrorMessage ? (
         <TransactionErrorContent onDismiss={onDismiss} message={swapErrorMessage} />
       ) : (
         <ConfirmationModalContent
-          title="确认兑换"
+          title={t('ConfirmSwap')}
           onDismiss={onDismiss}
           topContent={modalHeader}
           bottomContent={modalBottom}

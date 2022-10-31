@@ -3,6 +3,7 @@ import { AddressZero } from '@ethersproject/constants'
 import { Currency, CurrencyAmount, Fraction, JSBI, Percent, Token, TokenAmount, WETH } from 'eotc-bscswap-sdk'
 import React, { useCallback, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
+import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router'
 import { Text } from 'rebass'
 import { ButtonConfirmed } from '../../components/Button'
@@ -100,6 +101,7 @@ export function V1LiquidityInfo({
 
 function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount: TokenAmount; token: Token }) {
   const { account, chainId } = useActiveWeb3React()
+  const { t } = useTranslation()
   const totalSupply = useTotalSupply(liquidityTokenAmount.token)
   const exchangeETHBalance = useETHBalances([liquidityTokenAmount.token.address])?.[liquidityTokenAmount.token.address]
   const exchangeTokenBalance = useTokenBalance(liquidityTokenAmount.token.address, token)
@@ -292,9 +294,9 @@ function V1PairMigration({ liquidityTokenAmount, token }: { liquidityTokenAmount
               {approval === ApprovalState.PENDING ? (
                 <Dots>Approving</Dots>
               ) : approval === ApprovalState.APPROVED ? (
-                '合法的'
+                t('allowed')
               ) : (
-                '授权'
+                t('approval')
               )}
             </ButtonConfirmed>
           </AutoColumn>

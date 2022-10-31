@@ -1,6 +1,7 @@
-import { Currency, ETHER, JSBI, TokenAmount } from 'eotc-bscswap-sdk'
+import { Currency, JSBI, TokenAmount } from 'eotc-bscswap-sdk'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Plus } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 import { Text } from 'rebass'
 import { ButtonDropdownLight } from '../../components/Button'
 import { LightCard } from '../../components/Card'
@@ -26,11 +27,11 @@ enum Fields {
 
 export default function PoolFinder() {
   const { account } = useActiveWeb3React()
-
+  const { t } = useTranslation()
   const [showSearch, setShowSearch] = useState<boolean>(false)
   const [activeField, setActiveField] = useState<number>(Fields.TOKEN1)
 
-  const [currency0, setCurrency0] = useState<Currency | null>(ETHER)
+  const [currency0, setCurrency0] = useState<Currency | null>(Currency.ETHER)
   const [currency1, setCurrency1] = useState<Currency | null>(null)
 
   const [pairState, pair] = usePair(currency0 ?? undefined, currency1 ?? undefined)
@@ -70,7 +71,7 @@ export default function PoolFinder() {
 
   const prerequisiteMessage = (
     <LightCard padding="45px 10px">
-      <Text textAlign="center">{!account ? '连接到钱包以查找池' : '选择一个代币来查找您的流动性'}</Text>
+      <Text textAlign="center">{!account ? t('connectWalletPool') : t('findLiquidity')}</Text>
     </LightCard>
   )
 
@@ -93,7 +94,7 @@ export default function PoolFinder() {
             </Row>
           ) : (
             <Text fontWeight={500} fontSize={20} marginLeft={'12px'}>
-              选择代币
+              {t('selectToken')}
             </Text>
           )}
         </ButtonDropdownLight>
@@ -117,7 +118,7 @@ export default function PoolFinder() {
             </Row>
           ) : (
             <Text fontWeight={500} fontSize={20} marginLeft={'12px'}>
-              选择代币
+              {t('selectToken')}
             </Text>
           )}
         </ButtonDropdownLight>
@@ -127,7 +128,7 @@ export default function PoolFinder() {
             style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
           >
             <Text textAlign="center" fontWeight={500}>
-              发现池
+              {t('discoveryPools')}
             </Text>
           </ColumnCenter>
         )}
@@ -159,7 +160,7 @@ export default function PoolFinder() {
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
                 <Text textAlign="center" fontWeight={500}>
-                  无效对.
+                  {t('invalidTokenPair')}
                 </Text>
               </AutoColumn>
             </LightCard>
@@ -167,7 +168,7 @@ export default function PoolFinder() {
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
                 <Text textAlign="center">
-                  正在加载
+                  {t('Loading')}
                   <Dots />
                 </Text>
               </AutoColumn>

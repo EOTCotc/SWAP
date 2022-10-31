@@ -2,8 +2,19 @@ import { ChainId, JSBI, Pair, Percent, Token, Trade, WETH } from 'eotc-bscswap-s
 import { AbstractConnector } from '@web3-react/abstract-connector'
 
 import { fortmatic, injected, portis, walletconnect, walletlink } from '../connectors'
+import { SupportedChainId } from './chains'
 // import { PairState } from '../data/Reserves'
-
+import {
+  BSC_AGGREGATION,
+  MAINNET_AGGREGATION,
+  POLYGON_AGGREGATION,
+  OKE_AGGREGATION,
+  HUIBO_AGGREGATION,
+  OPTIMISM_AGGREGATION,
+  GNOSIS_AGGREGATION,
+  AVALANCHE_AGGREGATION,
+  FANTOM_AGGREGATION
+} from './Aggregations'
 export const ROUTER_ADDRESS = '0xbD537A5afBB63295F1cab9A7A670415e153a91B9'
 export const AGGREGATION_ADDRESS = '0x2ae87E829a0bA3d9d7cFDD47128f43917fF5556C'
 
@@ -27,7 +38,16 @@ const WETH_ONLY: ChainTokenList = {
   [ChainId.KOVAN]: [WETH[ChainId.KOVAN]],
   [ChainId.BSC]: [WETH[ChainId.BSC]],
   [ChainId.BSC_TSET]: [WETH[ChainId.BSC_TSET]],
-  [ChainId.MATIC]: [WETH[ChainId.MATIC]]
+  [ChainId.MATIC]: [WETH[ChainId.MATIC]],
+  [ChainId.OKEXCHAIN]: [WETH[ChainId.OKEXCHAIN]],
+  [ChainId.HUOBI]: [WETH[ChainId.HUOBI]],
+  [ChainId.OPTIMISM]: [WETH[ChainId.OPTIMISM]],
+  [ChainId.ARBITRUM]: [WETH[ChainId.ARBITRUM]],
+  [ChainId.GNOSIS]: [WETH[ChainId.GNOSIS]],
+  [ChainId.AVALANCHE]: [WETH[ChainId.AVALANCHE]],
+  [ChainId.FANTOM]: [WETH[ChainId.FANTOM]],
+  [ChainId.KLAYTN]: [WETH[ChainId.KLAYTN]],
+  [ChainId.AURORA]: [WETH[ChainId.AURORA]]
 }
 interface CONTRACT {
   [key: string]: {
@@ -87,6 +107,29 @@ export const CONTRACT: CONTRACT = {
     Icon: require('../assets/images/swapLogo/baby.png')
   }
 }
+export const CONTRACTS: { [key in SupportedChainId]: CONTRACT } = {
+  [SupportedChainId.MAINNET]: MAINNET_AGGREGATION,
+  [SupportedChainId.ROPSTEN]: CONTRACT,
+  [SupportedChainId.RINKEBY]: CONTRACT,
+  [SupportedChainId.GOERLI]: CONTRACT,
+  [SupportedChainId.KOVAN]: CONTRACT,
+  [SupportedChainId.POLYGON]: POLYGON_AGGREGATION,
+  [SupportedChainId.POLYGON_MUMBAI]: CONTRACT,
+  [SupportedChainId.CELO]: CONTRACT,
+  [SupportedChainId.CELO_ALFAJORES]: CONTRACT,
+  [SupportedChainId.ARBITRUM_ONE]: CONTRACT,
+  [SupportedChainId.ARBITRUM_RINKEBY]: CONTRACT,
+  [SupportedChainId.OPTIMISM]: OPTIMISM_AGGREGATION,
+  [SupportedChainId.OPTIMISTIC_KOVAN]: CONTRACT,
+  [SupportedChainId.BSC]: BSC_AGGREGATION,
+  [SupportedChainId.OKEXCHAIN]: OKE_AGGREGATION,
+  [SupportedChainId.HUOBI]: HUIBO_AGGREGATION,
+  [SupportedChainId.GNOSIS]: GNOSIS_AGGREGATION,
+  [SupportedChainId.AVALANCHE]: AVALANCHE_AGGREGATION,
+  [SupportedChainId.FANTOM]: FANTOM_AGGREGATION,
+  [SupportedChainId.KLAYTN]: CONTRACT,
+  [SupportedChainId.AURORA]: CONTRACT
+}
 export interface TradesItem {
   name: string
   trade: Trade
@@ -95,6 +138,7 @@ export interface TradesItem {
 }
 export type Trades = TradesItem[]
 // used to construct intermediary pairs for trading
+// 用于构建交易的中介对
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
   [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT, COMP, MKR]
@@ -103,6 +147,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
 /**
  * Some tokens can only be swapped via certain pairs, so we override the list of bases that are considered for these
  * tokens.
+ * 有些令牌只能通过某些对交换，因此我们覆盖了为这些令牌考虑的基列表。
  */
 export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: Token[] } } = {
   [ChainId.MAINNET]: {
@@ -111,12 +156,14 @@ export const CUSTOM_BASES: { [chainId in ChainId]?: { [tokenAddress: string]: To
 }
 
 // used for display in the default list when adding liquidity
+// 用于添加流动性时在默认列表中显示
 export const SUGGESTED_BASES: ChainTokenList = {
   ...WETH_ONLY,
   [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT]
 }
 
 // used to construct the list of all pairs we consider by default in the frontend
+// 用于构造所有我们默认在前面考虑的对的列表
 export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
   ...WETH_ONLY,
   [ChainId.MAINNET]: [...WETH_ONLY[ChainId.MAINNET], DAI, USDC, USDT]

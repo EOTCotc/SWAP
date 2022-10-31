@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo } from 'react'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 // import Refresh from '../../assets/images/refresh.svg'
 // import querylogo from '../../assets/images/eotc.png'
 import { useDerivedSwapInfo, useDexNameState } from '../../state/swap/hooks'
@@ -57,6 +58,7 @@ const TokenBalance = styled.span`
 `
 
 export default function Inquire() {
+  const { t } = useTranslation()
   const { v2TradeList, v2Trades } = useDerivedSwapInfo()
   // 用户允许的滑点
   const [allowedSlippage] = useUserSlippageTolerance()
@@ -69,8 +71,7 @@ export default function Inquire() {
   return (
     <Lists>
       <ListTitle>
-        <ActiveText>查询结果</ActiveText>
-        {/* <ListImg src={Refresh}></ListImg> */}
+        <ActiveText>{t('searchResults')}</ActiveText>
       </ListTitle>
 
       {v2TradeList ? (
@@ -94,10 +95,12 @@ export default function Inquire() {
                       text={
                         <>
                           <TokenBalance>
-                            {item.pairs?.[0]?.reserve0.token.symbol}余额: {item.pairs?.[0]?.reserve0.toSignificant(2)}
+                            {item.pairs?.[0]?.reserve0.token.symbol}
+                            {t('balance', { balanceInput: item.pairs?.[0]?.reserve0.toSignificant(2) })}{' '}
                           </TokenBalance>
                           <TokenBalance>
-                            {item.pairs?.[0]?.reserve1.token.symbol}余额: {item.pairs?.[0]?.reserve1.toSignificant(2)}
+                            {item.pairs?.[0]?.reserve1.token.symbol}
+                            {t('balance', { balanceInput: item.pairs?.[0]?.reserve1.toSignificant(2) })}
                           </TokenBalance>
                         </>
                       }
@@ -105,17 +108,18 @@ export default function Inquire() {
                   ) : (
                     <>
                       <TokenBalance>
-                        {item.pairs?.[0]?.reserve0.token.symbol}余额: {item.pairs?.[0]?.reserve0.toSignificant(2)}
+                        {item.pairs?.[0]?.reserve0.token.symbol}{' '}
+                        {t('balance', { balanceInput: item.pairs?.[0]?.reserve0.toSignificant(2) })}{' '}
                       </TokenBalance>
                       <TokenBalance>
-                        {item.pairs?.[0]?.reserve1.token.symbol}余额: {item.pairs?.[0]?.reserve1.toSignificant(2)}
+                        {item.pairs?.[0]?.reserve1.token.symbol}
+                        {t('balance', { balanceInput: item.pairs?.[0]?.reserve1.toSignificant(2) })}{' '}
                       </TokenBalance>
                     </>
                   )}
                 </AutoRow>
               </ListTitle>
               <ListTitle>
-                {/* <ListDiv></ListDiv> */}
                 <AutoRow gap="6px">
                   <PriceText trade={item.trade} allowedSlippage={allowedSlippage} />
                 </AutoRow>
@@ -128,7 +132,7 @@ export default function Inquire() {
         })
       ) : (
         <ListTitle>
-          <ActiveText>输入查询</ActiveText>
+          <ActiveText>{t('enterAquery')}</ActiveText>
           {/* <ListImg src={Refresh}></ListImg> */}
         </ListTitle>
       )}

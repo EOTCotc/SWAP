@@ -101,46 +101,46 @@ export function SwapPoolTabs({ active }: { active: 'swap' | 'pool' }) {
 }
 
 export function FindPoolTabs() {
+  const { t } = useTranslation()
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft />
         </HistoryLink>
-        <ActiveText>增加流动性</ActiveText>
-        <QuestionHelper text={'使用此工具查找不会自动出现在界面中的代币对。'} />
+        <ActiveText>{t('importPool')}</ActiveText>
+        <QuestionHelper text={t('importPoolQuestionHelper')} />
       </RowBetween>
     </Tabs>
   )
 }
 
 export function AddRemoveTabs({ adding }: { adding: boolean }) {
+  const { t } = useTranslation()
   return (
     <Tabs>
       <RowBetween style={{ padding: '1rem' }}>
         <HistoryLink to="/pool">
           <StyledArrowLeft />
         </HistoryLink>
-        <ActiveText>{adding ? '增加' : '移除'}流动性</ActiveText>
-        <QuestionHelper
-          text={
-            adding
-              ? '您在增加流动性时会获得代表您仓位的资金池代币。这些代币会按您在资金池的占比自动赚取费用，且能够随时兑现。'
-              : '移除池内代币将按当前利率将您的头寸转换回基础代币，与您在池中的份额成比例。应计费用包含在您收到的金额中。'
-          }
-        />
+        <ActiveText>
+          {adding ? t('add') : t('remove')}
+          {t('liquidity')}
+        </ActiveText>
+        <QuestionHelper text={adding ? t('text1') : t('text2')} />
       </RowBetween>
     </Tabs>
   )
 }
 export function MiningTabs({ active }: { active: 'stake' | 'unstake' }) {
+  const { t } = useTranslation()
   return (
     <_MiningTabs>
       <StyledNavLinkMining id={`mining-stake-nav-link`} to={'/mining/stake'} isActive={() => active === 'stake'}>
-        质押
+        {t('stake')}
       </StyledNavLinkMining>
       <StyledNavLinkMining id={`mining-unstake-nav-link`} to={'/mining/unstake'} isActive={() => active === 'unstake'}>
-        赎回
+        {t('unstake')}
       </StyledNavLinkMining>
     </_MiningTabs>
   )

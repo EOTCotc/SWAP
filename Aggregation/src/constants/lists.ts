@@ -2,7 +2,8 @@
 // export const DEFAULT_TOKEN_LIST_URL = 'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json'
 // export const DEFAULT_TOKEN_LIST_URL = 'https://tokens.pancakeswap.finance/pancakeswap-extended.json'
 export const DEFAULT_TOKEN_LIST_URL =
-  'https://raw.githubusercontent.com/EOTCotc/ListTokens/main/bscTokenLists/eotcswap.json'
+  // 'https://raw.githubusercontent.com/EOTCotc/ListTokens/main/bscTokenLists/eotcswap.json'
+  'https://raw.githubusercontent.com/XJ525/ListTokens/main/bscTokenLists/eotcswap.json'
 export const DEFAULT_LIST_OF_LISTS: string[] = [
   DEFAULT_TOKEN_LIST_URL,
   // 't2crtokens.eth', // kleros
@@ -21,5 +22,9 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   //  'https://umaproject.org/uma.tokenlist.json'
   //  'https://tokens.pancakeswap.finance/coingecko.json'
   //  'https://tokens.pancakeswap.finance/cmc.json'
-  'https://tokens.pancakeswap.finance/pancakeswap-extended.json'
+  'https://tokens.pancakeswap.finance/pancakeswap-extended.json',
+  'https://static.optimism.io/optimism.tokenlist.json'
 ]
+export const OPTIMISM_LIST = 'https://static.optimism.io/optimism.tokenlist.json'
+export const ARBITRUM_LIST = 'https://bridge.arbitrum.io/token-list-42161.json'
+export const CELO_LIST = 'https://celo-org.github.io/celo-token-list/celo.tokenlist.json'

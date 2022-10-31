@@ -1,8 +1,8 @@
 import React from 'react'
 import { Text } from 'rebass'
-import { ChainId, Currency, currencyEquals, ETHER, Token } from 'eotc-bscswap-sdk'
+import { ChainId, Currency, currencyEquals, Token } from 'eotc-bscswap-sdk'
 import styled from 'styled-components'
-
+import { useTranslation } from 'react-i18next'
 import { SUGGESTED_BASES } from '../../constants'
 import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
@@ -34,26 +34,27 @@ export default function CommonBases({
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 }) {
+  const { t } = useTranslation()
   return (
     <AutoColumn gap="md">
       <AutoRow>
         <Text fontWeight={500} fontSize={14}>
-          常用代币
+          {t('commonTokens')}
         </Text>
-        <QuestionHelper text="这些代币通常与其他代币配对。" />
+        <QuestionHelper text={t('text17')} />
       </AutoRow>
       <AutoRow gap="4px">
         <BaseWrapper
           onClick={() => {
-            if (!selectedCurrency || !currencyEquals(selectedCurrency, ETHER)) {
-              onSelect(ETHER)
+            if (!selectedCurrency || !currencyEquals(selectedCurrency, Currency.ETHER)) {
+              onSelect(Currency.ETHER)
             }
           }}
-          disable={selectedCurrency === ETHER}
+          disable={selectedCurrency === Currency.ETHER}
         >
-          <CurrencyLogo currency={ETHER} style={{ marginRight: 8 }} />
+          <CurrencyLogo currency={Currency.ETHER} style={{ marginRight: 8 }} />
           <Text fontWeight={500} fontSize={16}>
-            BNB
+            {Currency.ETHER.symbol}
             {/* BNB */}
           </Text>
         </BaseWrapper>

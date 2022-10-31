@@ -4,7 +4,8 @@ import { useActiveWeb3React } from '../../hooks'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { Field } from '../../state/swap/actions'
 import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from '../../state/swap/hooks'
-import { BottomGrouping, SwapCallbackError } from '../swap/styleds'
+// import { SwapCallbackError } from '../swap/styleds'
+
 import {
   ButtonErrorExchang,
   ButtonLight,
@@ -18,7 +19,7 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useAppro
 import { JSBI, Trade } from 'eotc-bscswap-sdk'
 import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import { useExpertModeManager, useUserDeadline } from '../../state/user/hooks'
-import { AutoRow, RowBetween } from '../Row'
+import { RowBetween } from '../Row'
 import Loader from '../Loader'
 import { Text } from 'rebass'
 import ProgressSteps from '../ProgressSteps'
@@ -29,7 +30,13 @@ import { getTradeVersion } from '../../data/V1'
 import Wallet from '../../assets/images/wallet.png'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import ConfirmSwapModal from '../swap/ConfirmSwapModal'
-
+import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
+const LoadingButton = styled.div`
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+`
 export default function ExchangeButton({
   trade,
   allowedSlippage,
@@ -40,6 +47,7 @@ export default function ExchangeButton({
   dexName: string
 }) {
   const { account } = useActiveWeb3React()
+  const { t } = useTranslation()
   const { independentField, typedValue, recipient } = useSwapState()
   const { parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
@@ -175,12 +183,12 @@ export default function ExchangeButton({
         swapErrorMessage={swapErrorMessage}
         onDismiss={handleConfirmDismiss}
       />
-      <BottomGrouping>
+      <div>
         {!account ? (
           <>
             <ButtonLight onClick={toggleWalletModal}>
               <ButtonWallet src={Wallet} />
-              连接钱包
+              {t('connectWallet')}
             </ButtonLight>
           </>
         ) : showWrap ? (
@@ -202,13 +210,13 @@ export default function ExchangeButton({
             >
               <Text fontSize={16} fontWeight={500}>
                 {approval === ApprovalState.PENDING ? (
-                  <AutoRow gap="6px" justify="center">
-                    批准 <Loader stroke="white" />
-                  </AutoRow>
+                  <LoadingButton>
+                    {t('approval')} <Loader stroke="white" />
+                  </LoadingButton>
                 ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                  '合法的'
+                  t('allowed')
                 ) : (
-                  '授权 '
+                  t('approval')
                 )}
               </Text>
             </ButtonConfirmedExchange>
@@ -233,17 +241,15 @@ export default function ExchangeButton({
             >
               <Text fontSize={16} fontWeight={500}>
                 {priceImpactSeverity > 3 && !isExpertMode
-                  ? `价格影响高`
-                  : `${priceImpactSeverity > 2 ? ' 仍要' : ''}兑换`}
+                  ? t('highPriceInfluence')
+                  : `${priceImpactSeverity > 2 ? t('stillTo') : ''}${t('swap')}`}
               </Text>
             </ButtonErrorExchang>
           </RowBetween>
         ) : (
           <ButtonErrorExchang
             onClick={() => {
-              console.log('787878')
               if (isExpertMode) {
-                console.log('isExpertMode')
                 handleSwap()
               } else {
                 setSwapState({
@@ -263,15 +269,15 @@ export default function ExchangeButton({
               {swapInputError
                 ? swapInputError
                 : priceImpactSeverity > 3 && !isExpertMode
-                ? `价格影响太高`
-                : `${priceImpactSeverity > 2 ? ' 仍要' : ''}兑换`}
+                ? t('highPriceInfluence')
+                : `${priceImpactSeverity > 2 ? t('stillTo') : ''}${t('swap')}`}
             </Text>
           </ButtonErrorExchang>
         )}
         {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
-        {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
+        {/* {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null} */}
         {/* {betterTradeLinkVersion && <BetterTradeLink version={betterTradeLinkVersion} />} */}
-      </BottomGrouping>
+      </div>
     </>
   )
 }

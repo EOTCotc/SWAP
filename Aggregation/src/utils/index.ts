@@ -4,8 +4,8 @@ import { AddressZero } from '@ethersproject/constants'
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 import { BigNumber } from '@ethersproject/bignumber'
 import IUniswapV2Router02ABIJSON from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { ROUTER_ADDRESS, AGGREGATION_ADDRESS, CONTRACT } from '../constants'
-import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency, ETHER } from 'eotc-bscswap-sdk'
+import { AGGREGATION_ADDRESS, CONTRACTS } from '../constants'
+import { ChainId, JSBI, Percent, Token, CurrencyAmount, Currency } from 'eotc-bscswap-sdk'
 import { TokenAddressMap } from '../state/lists/hooks'
 import IAggregationABI from '../constants/abis/IAggregationABI.json'
 const { abi: IUniswapV2Router02ABI } = IUniswapV2Router02ABIJSON
@@ -24,10 +24,18 @@ const ETHERSCAN_PREFIXES: { [chainId in ChainId]: string } = {
   4: 'rinkeby.etherscan.io',
   5: 'goerli.etherscan.io',
   42: 'kovan.etherscan.io',
-  //256: 'testnet.hecoinfo.com'
   56: 'bscscan.com',
   97: 'testnet.bscscan.com',
-  137: 'polygonscan.com'
+  137: 'polygonscan.com',
+  [ChainId.OKEXCHAIN]: 'www.oklink.com/zh-cn/okc',
+  [ChainId.HUOBI]: 'www.hecoinfo.com',
+  [ChainId.OPTIMISM]: 'optimistic.etherscan.io',
+  [ChainId.ARBITRUM]: 'arbiscan.io',
+  [ChainId.GNOSIS]: 'gnosisscan.io',
+  [ChainId.AVALANCHE]: 'subnets.avax.network',
+  [ChainId.FANTOM]: 'ftmscan.com',
+  [ChainId.KLAYTN]: 'scope.klaytn.com',
+  [ChainId.AURORA]: 'aurorascan.dev'
 }
 
 export function getEtherscanLink(chainId: ChainId, data: string, type: 'transaction' | 'token' | 'address'): string {
@@ -97,10 +105,12 @@ export function getContract(address: string, ABI: any, library: Web3Provider, ac
 
 // account is optional
 export function getRouterContract(_: number, library: Web3Provider, account?: string): Contract {
-  return getContract(ROUTER_ADDRESS, IUniswapV2Router02ABI, library, account)
+  const routerAddress = CONTRACTS[_]['EOTC'].ROUTER
+  return getContract(routerAddress, IUniswapV2Router02ABI, library, account)
+  // return getContract(ROUTER_ADDRESS, IUniswapV2Router02ABI, library, account)
 }
 export function getRouterContractPro(_: number, library: Web3Provider, account?: string, dexName = 'EOTC'): Contract {
-  return getContract(CONTRACT[dexName].ROUTER, IUniswapV2Router02ABI, library, account)
+  return getContract(CONTRACTS[_][dexName].ROUTER, IUniswapV2Router02ABI, library, account)
 }
 export function getAggregationContract(chainId: number, library: Web3Provider, account?: string): Contract {
   return getContract(AGGREGATION_ADDRESS, IAggregationABI, library, account)
@@ -111,6 +121,45 @@ export function escapeRegExp(string: string): string {
 }
 
 export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currency): boolean {
-  if (currency === ETHER) return true
+  if (currency === Currency.ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
+}
+// 科学计数法转数值 - 处理 1e-7 这类精度问题
+export function getFullNum(num: number): any {
+  // 处理非数字
+  if (isNaN(num)) {
+    return num
+  }
+  // 处理不需要转换的数字
+  const str = String(num)
+  if (!/e/i.test(str)) {
+    return num
+  }
+  console.log(
+    Number(num)
+      .toFixed(18)
+      .replace(/\.?0+$/, '')
+  )
+  return Number(num)
+    .toFixed(18)
+    .replace(/\.?0+$/, '')
+}
+
+// 返回小数位后几位 截取
+// number 数值
+// p 位数
+export function toFixed(number: number, pp: number) {
+  let num = isNaN(number) || !number ? 0 : number
+  const p = isNaN(pp) || !pp ? 0 : pp
+  num = getFullNum(num)
+  var n = (num + '').split('.') // eslint-disable-line
+  var x = n.length > 1 ? n[1] : '' // eslint-disable-line
+  if (x.length > p) {
+    // eslint-disable-line
+    x = x.substr(0, p) // eslint-disable-line
+  } else {
+    // eslint-disable-line
+    x += Array(p - x.length + 1).join('0') // eslint-disable-line
+  } // eslint-disable-line
+  return n[0] + (x == '' ? '' : '.' + x) // eslint-disable-line
 }

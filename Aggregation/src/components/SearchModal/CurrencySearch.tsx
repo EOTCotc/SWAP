@@ -1,7 +1,7 @@
-import { Currency, ETHER, Token } from 'eotc-bscswap-sdk'
+import { Currency, Token } from 'eotc-bscswap-sdk'
 import React, { KeyboardEvent, RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import ReactGA from 'react-ga'
-// import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
 import { ThemeContext } from 'styled-components'
@@ -42,7 +42,7 @@ export function CurrencySearch({
   isOpen,
   onChangeList
 }: CurrencySearchProps) {
-  // const { t } = useTranslation()
+  const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
 
@@ -121,7 +121,7 @@ export function CurrencySearch({
       if (e.key === 'Enter') {
         const s = searchQuery.toLowerCase().trim()
         if (s === 'eth') {
-          handleCurrencySelect(ETHER)
+          handleCurrencySelect(Currency.ETHER)
         } else if (filteredSortedTokens.length > 0) {
           if (
             filteredSortedTokens[0].symbol?.toLowerCase() === searchQuery.trim().toLowerCase() ||
@@ -142,8 +142,8 @@ export function CurrencySearch({
       <PaddedColumn gap="14px">
         <RowBetween>
           <Text fontWeight={500} fontSize={16}>
-            选择代币
-            <QuestionHelper text="通过搜索代币的名称或符号将其地址粘贴到下面来查找代币" />
+            {t('selectToken')}
+            <QuestionHelper text={t('selectQuestionHelper')} />
           </Text>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
@@ -151,7 +151,8 @@ export function CurrencySearch({
         <SearchInput
           type="text"
           id="token-search-input"
-          placeholder="搜索名称或粘贴地址"
+          // placeholder="搜索名称或粘贴地址"
+          placeholder={t('tokenSearchPlaceholder')}
           value={searchQuery}
           ref={inputRef as RefObject<HTMLInputElement>}
           onChange={handleInput}
@@ -162,7 +163,7 @@ export function CurrencySearch({
         )}
         <RowBetween>
           <Text fontSize={14} fontWeight={500}>
-            代币名称
+            {t('tokenName')}
           </Text>
           <SortButton ascending={invertSearchOrder} toggleSortOrder={() => setInvertSearchOrder(iso => !iso)} />
         </RowBetween>
@@ -206,7 +207,7 @@ export function CurrencySearch({
             onClick={onChangeList}
             id="currency-search-change-list-button"
           >
-            {selectedListInfo.current ? '切换' : '选择列表'}
+            {selectedListInfo.current ? t('switch') : t('selectList')}
           </LinkStyledButton>
         </RowBetween>
       </Card>

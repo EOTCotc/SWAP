@@ -8,7 +8,7 @@ import { AutoColumn } from '../Column'
 import QuestionHelper from '../QuestionHelper'
 import { AutoRow } from '../Row'
 import CurrencyLogo from '../CurrencyLogo'
-
+import { useTranslation } from 'react-i18next'
 const BaseWrapper = styled.div<{ disable?: boolean }>`
   border: 1px solid ${({ theme, disable }) => (disable ? 'transparent' : theme.bg3)};
   border-radius: 10px;
@@ -34,13 +34,14 @@ export default function CommonBases({
   selectedCurrency?: Currency | null
   onSelect: (currency: Currency) => void
 }) {
+  const { t } = useTranslation()
   return (
     <AutoColumn gap="md">
       <AutoRow>
         <Text fontWeight={500} fontSize={14}>
-          常用代币
+          {t('commonTokens')}
         </Text>
-        <QuestionHelper text="这些代币通常与其他代币配对。" />
+        <QuestionHelper text={t('text17')} />
       </AutoRow>
       <AutoRow gap="4px">
         <BaseWrapper

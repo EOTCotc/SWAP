@@ -19,7 +19,15 @@ const MEDIA_WIDTHS = {
   upToLarge: 1280,
   upToMoreSmall: 400
 }
+export const MEDIA_WIDTHSV3 = {
+  upToExtraSmall: 500,
 
+  upToSmall: 720,
+
+  upToMedium: 960,
+
+  upToLarge: 1280
+}
 const mediaWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
   (accumulator, size) => {
     ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
@@ -67,6 +75,7 @@ export function colors(darkMode: boolean): Colors {
     bg11: darkMode ? '#F5F5F5' : '#1A1B27',
     bg12: darkMode ? '#FAF0E5' : '#333136',
     bg13: darkMode ? '#E8F2FF' : '#1E3157',
+    bg14: darkMode ? 'rgb(245, 246, 252)' : 'rgb(20, 27, 43)',
 
     color1: darkMode ? '#F3F4F5' : '#191c2a',
     color2: darkMode ? '#2B3143' : 'rgba(255,255,255,0)',

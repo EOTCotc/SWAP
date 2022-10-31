@@ -1,5 +1,6 @@
 import { Currency, CurrencyAmount, JSBI, Pair, Percent, TokenAmount } from '@eotcswap/swap-sdk'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
@@ -29,6 +30,7 @@ export function useDerivedBurnInfo(
   error?: string
 } {
   const { account, chainId } = useActiveWeb3React()
+  const { t } = useTranslation()
 
   const { independentField, typedValue } = useBurnState()
 
@@ -119,11 +121,11 @@ export function useDerivedBurnInfo(
 
   let error: string | undefined
   if (!account) {
-    error = '连接钱包'
+    error = t('connectWallet')
   }
 
   if (!parsedAmounts[Field.LIQUIDITY] || !parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
-    error = error ?? '输入金额'
+    error = error ?? t('enterTheAmount')
   }
 
   return { pair, parsedAmounts, error }

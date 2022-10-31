@@ -12,6 +12,7 @@ import { AutoColumn } from '../Column'
 import CurrencyLogo from '../CurrencyLogo'
 import { RowBetween, RowFixed } from '../Row'
 import { TruncatedText, SwapShowAcceptChanges } from './styleds'
+import { useTranslation } from 'react-i18next'
 
 export default function SwapModalHeader({
   trade,
@@ -34,6 +35,7 @@ export default function SwapModalHeader({
   const priceImpactSeverity = warningSeverity(priceImpactWithoutFee)
 
   const theme = useContext(ThemeContext)
+  const { t } = useTranslation()
 
   return (
     <AutoColumn gap={'md'} style={{ marginTop: '20px' }}>
@@ -99,11 +101,15 @@ export default function SwapModalHeader({
       <AutoColumn justify="flex-start" gap="sm" style={{ padding: '12px 0 0 0px' }}>
         {trade.tradeType === TradeType.EXACT_INPUT ? (
           <TYPE.italic textAlign="left" style={{ width: '100%' }}>
-            {`估计输出。你至少会收到`}
+            {t('text19', {
+              amount: slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6),
+              symbol: trade.outputAmount.currency.symbol
+            })}
+            {/* {`估计输出。你至少会收到`}
             <b>
               {slippageAdjustedAmounts[Field.OUTPUT]?.toSignificant(6)} {trade.outputAmount.currency.symbol}
             </b>
-            {' 否则交易将恢复。'}
+            {' 否则交易将恢复。'} */}
           </TYPE.italic>
         ) : (
           <TYPE.italic textAlign="left" style={{ width: '100%' }}>

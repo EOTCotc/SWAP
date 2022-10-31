@@ -1,14 +1,15 @@
-import { Currency, ETHER, Token } from 'eotc-bscswap-sdk'
+import { Currency /**Currency.ETHER**/, Token } from 'eotc-bscswap-sdk'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-// import EthereumLogo from '../../assets/images/ethereum-logo.png'
-import EthereumLogo from '../../assets/images/bnb.png'
+import EthereumLogo from '../../assets/images/ethereum-logo.png'
+// import EthereumLogo from '../../assets/images/bnb.png'
 // import EotcLogo from '../../assets/images/eotclogo.png'
 import useHttpLocations from '../../hooks/useHttpLocations'
 import { WrappedTokenInfo } from '../../state/lists/hooks'
 import Logo from '../Logo'
-
+import { getChainInfo } from '../../constants/chainInfo'
+import { useWeb3React } from '@web3-react/core'
 const getTokenLogoURL = (address: string) =>
   // `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
   `https://raw.githubusercontent.com/xiaoMocygz/ListTokens/bscImg/img/${address}/logo.png`
@@ -38,7 +39,7 @@ export default function CurrencyLogo({
   const uriLocations = useHttpLocations(currency instanceof WrappedTokenInfo ? currency.logoURI : undefined)
 
   const srcs: string[] = useMemo(() => {
-    if (currency === ETHER) return []
+    if (currency === Currency.ETHER) return []
 
     if (currency instanceof Token) {
       if (currency instanceof WrappedTokenInfo) {
@@ -49,9 +50,16 @@ export default function CurrencyLogo({
     }
     return []
   }, [currency, uriLocations])
-
-  if (currency === ETHER) {
-    return <StyledEthereumLogo src={EthereumLogo} size={size} style={style} />
+  const { chainId } = useWeb3React()
+  if (currency === Currency.ETHER) {
+    const isETH = currency?.symbol?.toUpperCase() === 'ETH'
+    return (
+      <StyledEthereumLogo
+        src={isETH ? EthereumLogo : getChainInfo(chainId)?.circleLogoUrl || getChainInfo(chainId)?.logoUrl}
+        size={size}
+        style={style}
+      />
+    )
   }
 
   return (

@@ -1,5 +1,6 @@
-import { Currency, CurrencyAmount, ETHER, JSBI, Pair, Percent, Price, TokenAmount } from 'eotc-bscswap-sdk'
+import { Currency, CurrencyAmount, JSBI, Pair, Percent, Price, TokenAmount } from 'eotc-bscswap-sdk'
 import { useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import { PairState, usePair } from '../../data/Reserves'
 import { useTotalSupply } from '../../data/TotalSupply'
@@ -34,7 +35,7 @@ export function useDerivedMintInfo(
   error?: string
 } {
   const { account, chainId } = useActiveWeb3React()
-
+  const { t } = useTranslation()
   const { independentField, typedValue, otherTypedValue } = useMintState()
 
   const dependentField = independentField === Field.CURRENCY_A ? Field.CURRENCY_B : Field.CURRENCY_A
@@ -83,7 +84,9 @@ export function useDerivedMintInfo(
           dependentField === Field.CURRENCY_B
             ? pair.priceOf(tokenA).quote(wrappedIndependentAmount)
             : pair.priceOf(tokenB).quote(wrappedIndependentAmount)
-        return dependentCurrency === ETHER ? CurrencyAmount.ether(dependentTokenAmount.raw) : dependentTokenAmount
+        return dependentCurrency === Currency.ETHER
+          ? CurrencyAmount.ether(dependentTokenAmount.raw)
+          : dependentTokenAmount
       }
       return undefined
     } else {
@@ -132,26 +135,26 @@ export function useDerivedMintInfo(
 
   let error: string | undefined
   if (!account) {
-    error = '连接钱包'
+    error = t('connectWallet')
   }
 
   if (pairState === PairState.INVALID) {
-    error = error ?? '无效代币对'
+    error = error ?? t('invalidTokenPair')
   }
 
   if (!parsedAmounts[Field.CURRENCY_A] || !parsedAmounts[Field.CURRENCY_B]) {
-    error = error ?? '输入金额'
+    error = error ?? t('enterTheAmount')
   }
 
   const { [Field.CURRENCY_A]: currencyAAmount, [Field.CURRENCY_B]: currencyBAmount } = parsedAmounts
 
   if (currencyAAmount && currencyBalances?.[Field.CURRENCY_A]?.lessThan(currencyAAmount)) {
-    error = currencies[Field.CURRENCY_A]?.symbol + ' 余额不足'
+    error = currencies[Field.CURRENCY_A]?.symbol + ' ' + t('insufficientBalance')
     // error = 'Insufficient ' + currencies[Field.CURRENCY_A]?.symbol + ' balance'
   }
 
   if (currencyBAmount && currencyBalances?.[Field.CURRENCY_B]?.lessThan(currencyBAmount)) {
-    error = currencies[Field.CURRENCY_B]?.symbol + ' 余额不足'
+    error = currencies[Field.CURRENCY_B]?.symbol + ' ' + t('insufficientBalance')
   }
 
   return {

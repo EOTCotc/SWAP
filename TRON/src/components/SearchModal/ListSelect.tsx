@@ -200,9 +200,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
             <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
               删除列表
             </UnpaddedLinkStyledButton>
-            {pending && (
-              <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>更新列表</UnpaddedLinkStyledButton>
-            )}
+            {pending && <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>更新列表</UnpaddedLinkStyledButton>}
           </PopoverContainer>
         )}
       </StyledMenu>
@@ -351,7 +349,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
             onKeyDown={handleEnterKey}
             style={{ height: '2.75rem', borderRadius: 12, padding: '12px' }}
           />
-          <AddListButton onClick={handleAddList} disabled={!validUrl} style={{fontSize:'13px'}}>
+          <AddListButton onClick={handleAddList} disabled={!validUrl} style={{ fontSize: '13px' }}>
             添加
           </AddListButton>
         </Row>

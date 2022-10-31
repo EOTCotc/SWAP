@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import ReactGA from 'react-ga'
+import { useTranslation } from 'react-i18next'
 import { usePopper } from 'react-popper'
 import { useDispatch, useSelector } from 'react-redux'
 import { Text } from 'rebass'
@@ -94,7 +95,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
   const selectedListUrl = useSelectedListUrl()
   const dispatch = useDispatch<AppDispatch>()
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl]
-
+  const { t } = useTranslation()
   const isSelected = listUrl === selectedListUrl
 
   const [open, toggle] = useToggle(false)
@@ -196,11 +197,13 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
           <PopoverContainer show={true} ref={setPopperElement as any} style={styles.popper} {...attributes.popper}>
             <div>{list && listVersionLabel(list.version)}</div>
             <SeparatorDark />
-            <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>查看列表</ExternalLink>
+            <ExternalLink href={`https://tokenlists.org/token-list?url=${listUrl}`}>{t('viewList')}</ExternalLink>
             <UnpaddedLinkStyledButton onClick={handleRemoveList} disabled={Object.keys(listsByUrl).length === 1}>
-              删除列表
+              {t('removeList')}
             </UnpaddedLinkStyledButton>
-            {pending && <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>更新列表</UnpaddedLinkStyledButton>}
+            {pending && (
+              <UnpaddedLinkStyledButton onClick={handleAcceptListUpdate}>{t('updateList')}</UnpaddedLinkStyledButton>
+            )}
           </PopoverContainer>
         )}
       </StyledMenu>
@@ -210,7 +213,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
           className="select-button"
           style={{ width: '5rem', minWidth: '5rem', padding: '0.5rem .35rem', borderRadius: '12px', fontSize: '14px' }}
         >
-          已选择
+          {t('selected')}
         </ButtonPrimary>
       ) : (
         <>
@@ -225,7 +228,7 @@ const ListRow = memo(function ListRow({ listUrl, onBack }: { listUrl: string; on
             }}
             onClick={selectThisList}
           >
-            选择
+            {t('select')}
           </ButtonPrimary>
         </>
       )}
@@ -248,7 +251,7 @@ const ListContainer = styled.div`
 
 export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBack: () => void }) {
   const [listUrlInput, setListUrlInput] = useState<string>('')
-
+  const { t } = useTranslation()
   const dispatch = useDispatch<AppDispatch>()
   const lists = useSelector<AppState, AppState['lists']['byUrl']>(state => state.lists.byUrl)
   const adding = Boolean(lists[listUrlInput]?.loadingRequestId)
@@ -326,7 +329,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
             <ArrowLeft style={{ cursor: 'pointer' }} onClick={onBack} />
           </div>
           <Text fontWeight={500} fontSize={20}>
-            选择列表
+            {t('selectList')}
           </Text>
           <CloseIcon onClick={onDismiss} />
         </RowBetween>
@@ -336,7 +339,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
 
       <PaddedColumn gap="14px">
         <Text fontWeight={600}>
-          添加列表{' '}
+          {t('addList')}
           <QuestionHelper text="代币列表是 ERC20 代币列表的开放规范。您可以通过在下面输入其 URL 来使用任何令牌列表。请注意，第三方代币列表可能包含虚假或恶意的 ERC20 代币。" />
         </Text>
         <Row>
@@ -350,7 +353,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
             style={{ height: '2.75rem', borderRadius: 12, padding: '12px' }}
           />
           <AddListButton onClick={handleAddList} disabled={!validUrl} style={{ fontSize: '13px' }}>
-            添加
+            {t('add')}
           </AddListButton>
         </Row>
         {addError ? (
@@ -370,7 +373,7 @@ export function ListSelect({ onDismiss, onBack }: { onDismiss: () => void; onBac
       <Separator />
 
       <div style={{ padding: '16px', textAlign: 'center' }}>
-        <ExternalLink href="https://tokenlists.org">浏览列表</ExternalLink>
+        <ExternalLink href="https://tokenlists.org">{t('viewList')}</ExternalLink>
       </div>
     </Column>
   )

@@ -33,6 +33,7 @@ export interface Colors {
   bg11: Color
   bg12: Color
   bg13: Color
+  bg14: string
   color1: Color
   color2: Color
 

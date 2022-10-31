@@ -47,6 +47,7 @@ import { computeTradePriceBreakdown, warningSeverity } from '../../utils/prices'
 import AppBody from '../AppBody'
 import Wallet from '../../assets/images/wallet.png'
 import { ClickableText } from '../Pool/styleds'
+import { useTranslation } from 'react-i18next'
 
 export default function Swap() {
   const loadedUrlParams = useDefaultsFromURLSearch()
@@ -268,6 +269,7 @@ export default function Swap() {
   const handleOutputSelect = useCallback(outputCurrency => onCurrencySelection(Field.OUTPUT, outputCurrency), [
     onCurrencySelection
   ])
+  const { t } = useTranslation()
 
   return (
     <>
@@ -304,7 +306,7 @@ export default function Swap() {
 
               <AutoColumn gap={'md'}>
                 <CurrencyInputPanel
-                  label={independentField === Field.OUTPUT && !showWrap && trade ? '从 (估计)' : '从'}
+                  label={independentField === Field.OUTPUT && !showWrap && trade ? t('From(estimated)') : t('from')}
                   value={formattedAmounts[Field.INPUT]}
                   showMaxButton={!atMaxAmountInput}
                   currency={currencies[Field.INPUT]}
@@ -328,7 +330,7 @@ export default function Swap() {
                     </ArrowWrapper>
                     {recipient === null && !showWrap && isExpertMode ? (
                       <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                        + 添加发送（可选）
+                        + {t('addSendOptional')}
                       </LinkStyledButton>
                     ) : null}
                   </AutoRow>
@@ -336,7 +338,7 @@ export default function Swap() {
                 <CurrencyInputPanel
                   value={formattedAmounts[Field.OUTPUT]}
                   onUserInput={handleTypeOutput}
-                  label={independentField === Field.INPUT && !showWrap && trade ? '到 (估计)' : '到'}
+                  label={independentField === Field.INPUT && !showWrap && trade ? t('To(estimated)') : t('to')}
                   showMaxButton={false}
                   currency={currencies[Field.OUTPUT]}
                   onCurrencySelect={handleOutputSelect}
@@ -352,7 +354,7 @@ export default function Swap() {
                         <ArrowDown size="16" color={theme.text2} />
                       </ArrowWrapper>
                       <LinkStyledButton id="remove-recipient-button" onClick={() => onChangeRecipient(null)}>
-                        - 删除发送
+                        - {t('deleteSend')}
                       </LinkStyledButton>
                     </AutoRow>
                     <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
@@ -365,7 +367,7 @@ export default function Swap() {
                       {Boolean(trade) && false && (
                         <RowBetween align="center">
                           <Text fontWeight={500} fontSize={14} color={theme.text2}>
-                            价格
+                            {t('Prices')}
                           </Text>
                           <TradePrice
                             price={trade?.executionPrice}
@@ -377,7 +379,7 @@ export default function Swap() {
                       {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
                         <RowBetween align="center">
                           <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
-                            滑点容差
+                            {t('slippageTolerance')}
                           </ClickableText>
                           <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
                             {allowedSlippage / 100}%
@@ -393,7 +395,7 @@ export default function Swap() {
                   <>
                     <ButtonLight onClick={toggleWalletModal}>
                       <ButtonWallet src={Wallet} />
-                      连接钱包
+                      {t('connectWallet')}
                     </ButtonLight>
                   </>
                 ) : (
@@ -420,7 +422,7 @@ export default function Swap() {
                   //   </Text>
                   // </ButtonError>
                 )}
-                {showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
+                {false && showApproveFlow && <ProgressSteps steps={[approval === ApprovalState.APPROVED]} />}
                 {isExpertMode && swapErrorMessage ? <SwapCallbackError error={swapErrorMessage} /> : null}
                 {betterTradeLinkVersion && <BetterTradeLink version={betterTradeLinkVersion} />}
               </BottomGrouping>

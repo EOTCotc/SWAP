@@ -23,13 +23,14 @@ import { usePairs } from '../../data/Reserves'
 import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks'
 import AppBody from '../AppBody'
 import { Dots } from '../../components/swap/styleds'
+import { useTranslation } from 'react-i18next'
 // import { CONTRACT } from '../../constants'
 
 export default function Pool() {
   // Context Hook允许我们通过Hook来直接获取某个Context的值
   const theme = useContext(ThemeContext)
   const { account } = useActiveWeb3React()
-
+  const { t } = useTranslation()
   // fetch the user's balances of all tracked V2 LP tokens
   // 获取所有跟踪的V2 LP令牌的用户余额
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -59,7 +60,6 @@ export default function Pool() {
     fetchingV2PairBalances || v2Pairs?.length < liquidityTokensWithBalances.length || v2Pairs?.some(V2Pair => !V2Pair)
 
   const allV2PairsWithLiquidity = v2Pairs.map(([, pair]) => pair).filter((v2Pair): v2Pair is Pair => Boolean(v2Pair))
-
   const hasV1Liquidity = useUserHasLiquidityInAllTokens()
 
   return (
@@ -74,28 +74,28 @@ export default function Pool() {
             to="/add/0x55d398326f99059fF775485246999027B3197955/0x52445374E55a63C0De647445D5B6a4244702980C"
           >
             <Text fontWeight={500} fontSize={20}>
-              增加流动性
+              {t('addLiquidity')}
             </Text>
           </ButtonPrimary>
 
           <AutoColumn gap="12px" style={{ width: '100%' }}>
             <RowBetween padding={'0 8px'}>
               <Text color={theme.text1} fontWeight={500}>
-                您的流动性
+                {t('yourLiquidity')}
               </Text>
-              <Question text="您增加流动性时会获得代表您资金池占比的代币。" />
+              <Question text={t('yourLiquidityQuestion')} />
             </RowBetween>
 
             {!account ? (
               <LightCard padding="40px">
                 <TYPE.body color={theme.text3} textAlign="center">
-                  连接到钱包以查看您的流动性。
+                  {t('viewLiquidity')}
                 </TYPE.body>
               </LightCard>
             ) : v2IsLoading ? (
               <LightCard padding="40px">
                 <TYPE.body color={theme.text3} textAlign="center">
-                  <Dots>正在加载</Dots>
+                  <Dots>{t('Loading')}</Dots>
                 </TYPE.body>
               </LightCard>
             ) : allV2PairsWithLiquidity?.length > 0 ? (
@@ -107,16 +107,16 @@ export default function Pool() {
             ) : (
               <LightCard padding="40px">
                 <TYPE.body color={theme.text3} textAlign="center">
-                  未发现流动性
+                  {t('noLiquidityFound')}
                 </TYPE.body>
               </LightCard>
             )}
 
             <div>
               <Text textAlign="center" fontSize={14} style={{ padding: '.5rem 0 .5rem 0' }}>
-                {hasV1Liquidity ? 'Uniswap V1 liquidity found!' : '没有看到您加入的池?'}{' '}
+                {hasV1Liquidity ? 'Uniswap V1 liquidity found!' : t('noPool')}{' '}
                 <StyledInternalLink id="import-pool-link" to={hasV1Liquidity ? '/migrate/v1' : '/find'}>
-                  {hasV1Liquidity ? 'Migrate now.' : '导入它'}
+                  {hasV1Liquidity ? 'Migrate now.' : t('importIt')}
                 </StyledInternalLink>
               </Text>
             </div>

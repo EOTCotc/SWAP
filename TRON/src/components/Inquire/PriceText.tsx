@@ -1,5 +1,6 @@
 import { Trade } from '@eotcswap/swap-sdk'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import { computeTradePriceBreakdown } from '../../utils/prices'
 const QueryText = styled.span`
@@ -17,11 +18,12 @@ const TokenBalance = styled.span`
 export default function PriceText({ trade }: { trade: Trade; allowedSlippage: number }) {
   // const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
   const { realizedLPFee } = computeTradePriceBreakdown(trade)
+  const { t } = useTranslation()
   return (
     <>
       <QueryText>{trade.outputAmount.toSignificant(4) + ' ' + trade.outputAmount.currency.symbol}</QueryText>
       <TokenBalance>
-        (手续费：{realizedLPFee ? `${realizedLPFee.toSignificant(3)} ${trade.inputAmount.currency.symbol}` : '-'})
+        ({t('fees')}：{realizedLPFee ? `${realizedLPFee.toSignificant(3)} ${trade.inputAmount.currency.symbol}` : '-'})
       </TokenBalance>
     </>
   )
