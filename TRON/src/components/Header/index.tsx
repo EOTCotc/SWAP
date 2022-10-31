@@ -20,6 +20,7 @@ import Row, { RowBetween } from '../Row'
 import Web3Status from '../Web3Status'
 import VersionSwitch from './VersionSwitch'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 // import { ExternalLink } from '../../theme'
 const activeClassName = 'active'
 const HeaderFrame = styled.div`
@@ -127,7 +128,7 @@ const HeaderControls = styled.div`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     flex-direction: column;
     align-items: flex-end;
-    margin-top: 50px
+    // margin-top: 50px
   `};
 `
 
@@ -226,6 +227,7 @@ export default function Header() {
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
   const [isDark] = useDarkModeManager()
   const { pathname } = useLocation()
+  const { t } = useTranslation()
   const isPoolActive =
     pathname.startsWith('/pool') ||
     pathname.startsWith('/add') ||
@@ -248,7 +250,7 @@ export default function Header() {
           </Title>
           <HeaderLinks>
             <StyledNavLink id={`swap-nav-link`} to={'/swap'}>
-              <Trans>兑换</Trans>
+              <Trans> {t('swap')}</Trans>
             </StyledNavLink>
             <StyledNavLink
               data-cy="pool-nav-link"
@@ -256,10 +258,10 @@ export default function Header() {
               to={'/pool'}
               className={isPoolActive ? activeClassName : undefined}
             >
-              <Trans>流动池</Trans>
+              <Trans> {t('pool')}</Trans>
             </StyledNavLink>
             <StyledNavLink data-cy="mining-nav-link" id={`mining-nav-link`} to={'/mining'}>
-              <Trans>挖矿</Trans>
+              <Trans>{t('mining')}</Trans>
             </StyledNavLink>
           </HeaderLinks>
         </HeaderElement>
@@ -279,11 +281,20 @@ export default function Header() {
               <Web3Status />
             </AccountElement>
           </HeaderElement>
-          <HeaderElementWrap>
-            <VersionSwitch />
-            <Settings />
-            <Menu />
-          </HeaderElementWrap>
+          {isMobile && (
+            <HeaderElementWrap>
+              <VersionSwitch />
+              <Menu />
+              <Settings />
+            </HeaderElementWrap>
+          )}
+          {!isMobile && (
+            <HeaderElementWrap>
+              <VersionSwitch />
+              <Settings />
+              <Menu />
+            </HeaderElementWrap>
+          )}
         </HeaderControls>
       </RowBetween>
     </HeaderFrame>

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from 'react'
 import styled, { ThemeContext } from 'styled-components'
-
+import { useTranslation } from 'react-i18next'
 import QuestionHelper from '../QuestionHelper'
 import { TYPE } from '../../theme'
 import { AutoColumn } from '../Column'
@@ -94,7 +94,7 @@ export interface SlippageTabsProps {
 
 export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, setDeadline }: SlippageTabsProps) {
   const theme = useContext(ThemeContext)
-
+  const { t } = useTranslation()
   const inputRef = useRef<HTMLInputElement>()
 
   const [slippageInput, setSlippageInput] = useState('')
@@ -149,9 +149,9 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-            滑点容差
+            {t('slippageTolerance')}
           </TYPE.black>
-          <QuestionHelper text="如果兑换率变动超过此百分比，则将还原该交易。" />
+          <QuestionHelper text={t('slippageToleranceQuestionHelper')} />
         </RowFixed>
         <RowBetween>
           <Option
@@ -215,10 +215,10 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
             }}
           >
             {slippageError === SlippageError.InvalidInput
-              ? '输入有效的滑点百分比'
+              ? t('validSlippage')
               : slippageError === SlippageError.RiskyLow
-              ? '您的交易可能会失败'
-              : '您的交易可能是抢先交易'}
+              ? t('yourTransactionFail')
+              : t('pre-emptive')}
           </RowBetween>
         )}
       </AutoColumn>
@@ -226,9 +226,9 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
       <AutoColumn gap="sm">
         <RowFixed>
           <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-            交易截止期限
+            {t('transactionDeadline')}
           </TYPE.black>
-          <QuestionHelper text="如果您的交易待处理超过此时间限制，则将还原该交易。" />
+          <QuestionHelper text={t('transactionDeadlineQuestionHelper')} />
         </RowFixed>
         <RowFixed>
           <OptionCustom style={{ width: '80px' }} tabIndex={-1}>
@@ -243,7 +243,7 @@ export default function SlippageTabs({ rawSlippage, setRawSlippage, deadline, se
             />
           </OptionCustom>
           <TYPE.body style={{ paddingLeft: '8px' }} fontSize={14}>
-            分钟
+            {t('minutes')}
           </TYPE.body>
         </RowFixed>
       </AutoColumn>

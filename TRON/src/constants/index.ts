@@ -264,6 +264,7 @@ export const CONTRACT: CONTRACT = {
   //   Icon: require('../assets/images/swapLogo/sushi.png')
   // }
 }
+export const EOTCUSDTLPTOKEN = '0xC3b56556F745060E7413078079616d450DC046C5'
 export interface TradesItem {
   name: string
   trade: Trade

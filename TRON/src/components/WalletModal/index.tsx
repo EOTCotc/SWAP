@@ -20,6 +20,7 @@ import { injected } from '../../connectors'
 // import { OVERLAY_READY } from '../../connectors/Fortmatic'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { AbstractConnector } from '@web3-react/abstract-connector'
+import { useTranslation } from 'react-i18next'
 
 const CloseIcon = styled.div`
   position: absolute;
@@ -128,6 +129,8 @@ export default function WalletModal({
 }) {
   // important that these are destructed from the account-specific web3-react context
   const { active, account, connector, activate, error } = useWeb3React()
+
+  const { t } = useTranslation()
 
   const [walletView, setWalletView] = useState(WALLET_VIEWS.ACCOUNT)
 
@@ -242,7 +245,7 @@ export default function WalletModal({
       // overwrite injected when needed
       if (option.connector === injected) {
         // don't show injected if there's no injected provider
-        if (!(window.tronWeb)) {
+        if (!window.tronWeb) {
           if (option.name === 'TronLink') {
             return (
               <Option
@@ -251,7 +254,9 @@ export default function WalletModal({
                 color={option.color}
                 header={'Install TronLink'}
                 subheader={null}
-                link={'https://chrome.google.com/webstore/detail/tronlink%EF%BC%88%E6%B3%A2%E5%AE%9D%E9%92%B1%E5%8C%85%EF%BC%89/ibnejdfjmmkpcnlpebklmnkoeoihofec'}
+                link={
+                  'https://chrome.google.com/webstore/detail/tronlink%EF%BC%88%E6%B3%A2%E5%AE%9D%E9%92%B1%E5%8C%85%EF%BC%89/ibnejdfjmmkpcnlpebklmnkoeoihofec'
+                }
                 icon={TronLinkIcon}
               />
             )
@@ -340,7 +345,7 @@ export default function WalletModal({
           </HeaderRow>
         ) : (
           <HeaderRow>
-            <HoverText>连接到钱包</HoverText>
+            <HoverText>{t('connectToWallet')}</HoverText>
           </HeaderRow>
         )}
         <ContentWrapper>
@@ -354,9 +359,7 @@ export default function WalletModal({
           ) : (
             <OptionGrid>{getOptions()}</OptionGrid>
           )}
-          {walletView !== WALLET_VIEWS.PENDING && (
-            <Blurb />
-          )}
+          {walletView !== WALLET_VIEWS.PENDING && <Blurb />}
         </ContentWrapper>
       </UpperSection>
     )

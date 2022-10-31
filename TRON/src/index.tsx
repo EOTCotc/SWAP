@@ -19,6 +19,13 @@ import getLibrary from './utils/getLibrary'
 // import Vconsole from 'vconsole'
 // new Vconsole()
 
+// const isTronLink = !!window.tronWeb
+// const isEthereum = !!(window.web3 || window.ethereum)
+// console.log(isTronLink, isEthereum, '888888')
+// if (!isTronLink && isEthereum) {
+//   alert('huhu')
+// }
+
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 if ('ethereum' in window) {
   ;(window.ethereum as any).autoRefreshOnNetworkChange = false

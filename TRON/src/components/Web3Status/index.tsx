@@ -5,6 +5,7 @@ import React, { useMemo, useEffect } from 'react'
 import { Activity } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import styled, { css } from 'styled-components'
+import { isMobile } from 'react-device-detect'
 // import CoinbaseWalletIcon from '../../assets/images/coinbaseWalletIcon.svg'
 // import FortmaticIcon from '../../assets/images/fortmaticIcon.png'
 // import PortisIcon from '../../assets/images/portisIcon.png'
@@ -209,14 +210,14 @@ function Web3StatusInner() {
     return (
       <Web3StatusError onClick={toggleWalletModal}>
         <NetworkIcon />
-        <Text>{error instanceof UnsupportedChainIdError ? '错误的网络' : '错误'}</Text>
+        <Text>{error instanceof UnsupportedChainIdError ? t('wrongNetwork') : t('error')}</Text>
       </Web3StatusError>
     )
   } else {
     return (
       <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <WalletImg src={Wallet} />
-        <Text>{t('连接钱包')}</Text>
+        <Text>{t('connectWallet')}</Text>
       </Web3StatusConnect>
     )
   }
@@ -225,15 +226,21 @@ function Web3StatusInner() {
 export default function Web3Status() {
   const { active, account } = useWeb3React()
   const contextNetwork = useWeb3React(NetworkContextName)
-
   const { ENSName } = useENSName(account ?? undefined)
-
+  let isTron = !!window.tronWeb
+  if (isMobile) {
+    isTron = !!window.tronWeb && !!window.tronWeb?.defaultAddress?.base58
+  }
+  const isEthereum = !!(window.web3 || window.ethereum)
   const allTransactions = useAllTransactions()
   useEffect(() => {
     const network = new NetWork.default()
     network.listenTronLink()
     network.initTronLinkWallet()
-  }, [])
+    if (!isTron && isEthereum) {
+      window.location.href = 'https://bsc.swap.eotc.im/'
+    }
+  }, [isEthereum, isTron])
 
   const sortedRecentTransactions = useMemo(() => {
     const txs = Object.values(allTransactions)

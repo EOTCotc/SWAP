@@ -31,6 +31,7 @@ import Wallet from '../../assets/images/wallet.png'
 import { useWalletModalToggle } from '../../state/application/hooks'
 import ConfirmSwapModal from '../swap/ConfirmSwapModal'
 import styled from 'styled-components'
+import { useTranslation } from 'react-i18next'
 const LoadingButton = styled.div`
   /* display: flex; */
   justify-content: center;
@@ -46,6 +47,7 @@ export default function ExchangeButton({
   dexName: string
 }) {
   const { account } = useActiveWeb3React()
+  const { t } = useTranslation()
   const { independentField, typedValue, recipient } = useSwapState()
   const { parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
   const { wrapType, execute: onWrap, inputError: wrapInputError } = useWrapCallback(
@@ -186,7 +188,7 @@ export default function ExchangeButton({
           <>
             <ButtonLight onClick={toggleWalletModal}>
               <ButtonWallet src={Wallet} />
-              连接钱包
+              {t('connectWallet')}
             </ButtonLight>
           </>
         ) : showWrap ? (
@@ -195,7 +197,7 @@ export default function ExchangeButton({
           </ButtonPrimary>
         ) : noRoute && userHasSpecifiedInputOutput ? (
           <GreyCard style={{ textAlign: 'center' }}>
-            <TYPE.main mb="4px">该交易的流动性不足。</TYPE.main>
+            <TYPE.main mb="4px">{t('text16')}</TYPE.main>
           </GreyCard>
         ) : showApproveFlow ? (
           <RowBetween>
@@ -209,12 +211,12 @@ export default function ExchangeButton({
               <Text fontSize={16} fontWeight={500}>
                 {approval === ApprovalState.PENDING ? (
                   <LoadingButton>
-                    授权 <Loader stroke="white" />
+                    {t('approval')} <Loader stroke="white" />
                   </LoadingButton>
                 ) : approvalSubmitted && approval === ApprovalState.APPROVED ? (
-                  '合法的'
+                  t('allowed')
                 ) : (
-                  '授权 '
+                  t('approval')
                 )}
               </Text>
             </ButtonConfirmedExchange>
@@ -239,8 +241,8 @@ export default function ExchangeButton({
             >
               <Text fontSize={16} fontWeight={500}>
                 {priceImpactSeverity > 3 && !isExpertMode
-                  ? `价格影响高`
-                  : `${priceImpactSeverity > 2 ? ' 仍要' : ''}兑换`}
+                  ? t('highPriceInfluence')
+                  : `${priceImpactSeverity > 2 ? t('stillTo') : ''}${t('swap')}`}
               </Text>
             </ButtonErrorExchang>
           </RowBetween>
@@ -267,8 +269,8 @@ export default function ExchangeButton({
               {swapInputError
                 ? swapInputError
                 : priceImpactSeverity > 3 && !isExpertMode
-                ? `价格影响太高`
-                : `${priceImpactSeverity > 2 ? ' 仍要' : ''}兑换`}
+                ? t('highPriceInfluence')
+                : `${priceImpactSeverity > 2 ? t('stillTo') : ''}${t('swap')}`}
             </Text>
           </ButtonErrorExchang>
         )}

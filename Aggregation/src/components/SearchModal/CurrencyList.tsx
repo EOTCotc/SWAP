@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from 'eotc-bscswap-sdk'
+import { Currency, CurrencyAmount, currencyEquals, Token } from 'eotc-bscswap-sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { FixedSizeList } from 'react-window'
 import { Text } from 'rebass'
@@ -16,9 +16,10 @@ import { MouseoverTooltip } from '../Tooltip'
 import { FadedSpan, MenuItem } from './styleds'
 import Loader from '../Loader'
 import { isTokenOnList } from '../../utils'
+import { useTranslation } from 'react-i18next'
 
 function currencyKey(currency: Currency): string {
-  return currency instanceof Token ? currency.address : currency === ETHER ? 'ETHER' : ''
+  return currency instanceof Token ? currency.address : currency === Currency.ETHER ? 'Currency.ETHER' : ''
 }
 
 const StyledBalanceText = styled(Text)`
@@ -102,7 +103,7 @@ function CurrencyRow({
 
   const removeToken = useRemoveUserAddedToken()
   const addToken = useAddUserToken()
-
+  const { t } = useTranslation()
   // only show add or remove buttons if not on selected list
   return (
     <MenuItem
@@ -120,27 +121,27 @@ function CurrencyRow({
         <FadedSpan>
           {!isOnSelectedList && customAdded ? (
             <TYPE.main fontWeight={500}>
-              用户添加
+              {t('userAdded')}
               <LinkStyledButton
                 onClick={event => {
                   event.stopPropagation()
                   if (chainId && currency instanceof Token) removeToken(chainId, currency.address)
                 }}
               >
-                (移除)
+                ({t('remove')})
               </LinkStyledButton>
             </TYPE.main>
           ) : null}
           {!isOnSelectedList && !customAdded ? (
             <TYPE.main fontWeight={500}>
-              按地址找到
+              {t('findByAddress')}
               <LinkStyledButton
                 onClick={event => {
                   event.stopPropagation()
                   if (currency instanceof Token) addToken(currency)
                 }}
               >
-                (添加)
+                ({t('add')})
               </LinkStyledButton>
             </TYPE.main>
           ) : null}
@@ -172,7 +173,6 @@ export default function CurrencyList({
   showETH: boolean
 }) {
   const itemData = useMemo(() => (showETH ? [Currency.ETHER, ...currencies] : currencies), [currencies, showETH])
-
   const Row = useCallback(
     ({ data, index, style }) => {
       const currency: Currency = data[index]

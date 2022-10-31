@@ -9,6 +9,7 @@ const ONE_HUNDRED_PERCENT = new Percent(JSBI.BigInt(10000), JSBI.BigInt(10000))
 const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE)
 
 // computes price breakdown for the trade
+// 计算交易的价格细目
 export function computeTradePriceBreakdown(
   trade?: Trade
 ): { priceImpactWithoutFee?: Percent; realizedLPFee?: CurrencyAmount } {

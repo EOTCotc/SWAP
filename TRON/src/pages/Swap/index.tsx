@@ -33,6 +33,7 @@ import useToggledVersion, { Version } from '../../hooks/useToggledVersion'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { useToggleSettingsMenu, useWalletModalToggle } from '../../state/application/hooks'
 import { Field } from '../../state/swap/actions'
+import { useTranslation } from 'react-i18next'
 import {
   useDefaultsFromURLSearch,
   useDerivedSwapInfo,
@@ -68,7 +69,7 @@ export default function Swap() {
 
   const { account } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
-
+  const { t } = useTranslation()
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
 
@@ -304,7 +305,7 @@ export default function Swap() {
 
               <AutoColumn gap={'md'}>
                 <CurrencyInputPanel
-                  label={independentField === Field.OUTPUT && !showWrap && trade ? '从 (估计)' : '从'}
+                  label={independentField === Field.OUTPUT && !showWrap && trade ? t('From(estimated)') : t('from')}
                   value={formattedAmounts[Field.INPUT]}
                   showMaxButton={!atMaxAmountInput}
                   currency={currencies[Field.INPUT]}
@@ -328,7 +329,7 @@ export default function Swap() {
                     </ArrowWrapper>
                     {recipient === null && !showWrap && isExpertMode ? (
                       <LinkStyledButton id="add-recipient-button" onClick={() => onChangeRecipient('')}>
-                        + 添加发送（可选）
+                        + {t('addSendOptional')}
                       </LinkStyledButton>
                     ) : null}
                   </AutoRow>
@@ -336,7 +337,7 @@ export default function Swap() {
                 <CurrencyInputPanel
                   value={formattedAmounts[Field.OUTPUT]}
                   onUserInput={handleTypeOutput}
-                  label={independentField === Field.INPUT && !showWrap && trade ? '到 (估计)' : '到'}
+                  label={independentField === Field.INPUT && !showWrap && trade ? t('To(estimated)') : t('to')}
                   showMaxButton={false}
                   currency={currencies[Field.OUTPUT]}
                   onCurrencySelect={handleOutputSelect}
@@ -377,7 +378,7 @@ export default function Swap() {
                       {allowedSlippage !== INITIAL_ALLOWED_SLIPPAGE && (
                         <RowBetween align="center">
                           <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
-                            滑点容差
+                            {t('slippageTolerance')}
                           </ClickableText>
                           <ClickableText fontWeight={500} fontSize={14} color={theme.text2} onClick={toggleSettings}>
                             {allowedSlippage / 100}%
@@ -393,7 +394,7 @@ export default function Swap() {
                   <>
                     <ButtonLight onClick={toggleWalletModal}>
                       <ButtonWallet src={Wallet} />
-                      连接钱包
+                      {t('connectWallet')}
                     </ButtonLight>
                   </>
                 ) : (

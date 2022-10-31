@@ -1,4 +1,4 @@
-import { TokenAmount, Pair, Currency } from '@eotcswap/swap-sdk'
+import { TokenAmount, Pair, Currency, Token } from '@eotcswap/swap-sdk'
 import { useCallback, useMemo } from 'react'
 import { abi as IUniswapV2PairABI } from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import { Interface } from '@ethersproject/abi'
@@ -6,7 +6,7 @@ import { useActiveWeb3React } from '../hooks'
 
 import { useMultipleContractSingleData } from '../state/multicall/hooks'
 import { wrappedCurrency } from '../utils/wrappedCurrency'
-import { CONTRACT } from '../constants'
+import { CONTRACT, EOTCUSDTLPTOKEN } from '../constants'
 
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI)
 
@@ -52,16 +52,34 @@ export function usePairs(currencies: [Currency | undefined, Currency | undefined
       if (!reserves) return [PairState.NOT_EXISTS, null]
       const { reserve0, reserve1 } = reserves
       const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
-      return [
-        PairState.EXISTS,
-        new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()))
-      ]
+      const tokenAmountA = new TokenAmount(token0, reserve0.toString())
+      const tokenAmountB = new TokenAmount(token1, reserve1.toString())
+      const tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
+        ? [tokenAmountA, tokenAmountB]
+        : [tokenAmountB, tokenAmountA]
+
+      const liquidityTokenAddress = Pair.getAddressPor(tokenA, tokenB, {
+        FACTORY: CONTRACT['EOTC'].FACTORY,
+        INIT_CODE_HASH: CONTRACT['EOTC'].INIT_CODE_HASH
+      })
+      console.log(liquidityTokenAddress, 'liquidityTokenAddress')
+
+      const isEOTCUSDT = liquidityTokenAddress && liquidityTokenAddress?.toLowerCase() === EOTCUSDTLPTOKEN.toLowerCase()
+      const decimals = isEOTCUSDT ? 6 : 18
+      const liquidityToken = new Token(
+        tokenAmounts[0].token.chainId,
+        liquidityTokenAddress,
+        decimals,
+        'EOTC-V2',
+        'Eotc swap'
+      )
+
+      return [PairState.EXISTS, new Pair(tokenAmountA, tokenAmountB, liquidityToken)]
     })
   }, [results, tokens])
 }
 export function usePairsPor(currencies: [Currency | undefined, Currency | undefined][]): Resultses {
   const { chainId } = useActiveWeb3React()
-
   const tokens = useMemo(
     () =>
       currencies.map(([currencyA, currencyB]) => [
@@ -104,10 +122,30 @@ export function usePairsPor(currencies: [Currency | undefined, Currency | undefi
         if (!reserves) return [PairState.NOT_EXISTS, null]
         const { reserve0, reserve1 } = reserves
         const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]
-        return [
-          PairState.EXISTS,
-          new Pair(new TokenAmount(token0, reserve0.toString()), new TokenAmount(token1, reserve1.toString()))
-        ]
+        const tokenAmountA = new TokenAmount(token0, reserve0.toString())
+        const tokenAmountB = new TokenAmount(token1, reserve1.toString())
+        const tokenAmounts = tokenAmountA.token.sortsBefore(tokenAmountB.token) // does safety checks
+          ? [tokenAmountA, tokenAmountB]
+          : [tokenAmountB, tokenAmountA]
+
+        const liquidityTokenAddress = Pair.getAddressPor(tokenA, tokenB, {
+          FACTORY: CONTRACT[item].FACTORY,
+          INIT_CODE_HASH: CONTRACT[item].INIT_CODE_HASH
+        })
+        console.log(liquidityTokenAddress, 'liquidityTokenAddress')
+
+        const isEOTCUSDT =
+          liquidityTokenAddress && liquidityTokenAddress?.toLowerCase() === EOTCUSDTLPTOKEN.toLowerCase()
+        const decimals = isEOTCUSDT ? 6 : 18
+        const liquidityToken = new Token(
+          tokenAmounts[0].token.chainId,
+          liquidityTokenAddress,
+          decimals,
+          'EOTC-V2',
+          'Eotc swap'
+        )
+
+        return [PairState.EXISTS, new Pair(tokenAmountA, tokenAmountB, liquidityToken)]
       })
     }
     return res

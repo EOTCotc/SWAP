@@ -1,5 +1,6 @@
 import { Trade, TradeType } from 'eotc-bscswap-sdk'
 import React, { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ThemeContext } from 'styled-components'
 import { Field } from '../../state/swap/actions'
 import { useUserSlippageTolerance } from '../../state/user/hooks'
@@ -14,6 +15,7 @@ import SwapRoute from './SwapRoute'
 
 function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippage: number }) {
   const theme = useContext(ThemeContext)
+  const { t } = useTranslation()
   const { priceImpactWithoutFee } = computeTradePriceBreakdown(trade)
   const isExactIn = trade.tradeType === TradeType.EXACT_INPUT
   const slippageAdjustedAmounts = computeSlippageAdjustedAmounts(trade, allowedSlippage)
@@ -24,9 +26,9 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-              {isExactIn ? '最低收到' : '最大销售量'}
+              {isExactIn ? t('minimumReceived') : t('maximumSold')}
             </TYPE.black>
-            <QuestionHelper text="如果在确认之前出现较大的不利价格变动，您的交易将恢复。" />
+            <QuestionHelper text={t('text5')} />
           </RowFixed>
           <RowFixed>
             <TYPE.black color={theme.text1} fontSize={14}>
@@ -41,9 +43,9 @@ function TradeSummary({ trade, allowedSlippage }: { trade: Trade; allowedSlippag
         <RowBetween>
           <RowFixed>
             <TYPE.black fontSize={14} fontWeight={400} color={theme.text2}>
-              价格影响
+              {t('priceImpact')}
             </TYPE.black>
-            <QuestionHelper text="由于交易规模而导致的市场价格和估计价格之间的差异。" />
+            <QuestionHelper text={t('text6')} />
           </RowFixed>
           <FormattedPriceImpact priceImpact={priceImpactWithoutFee} />
         </RowBetween>

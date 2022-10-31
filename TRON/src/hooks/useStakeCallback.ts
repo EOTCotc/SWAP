@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 import { useTransactionAdder } from '../state/transactions/hooks'
+import { useTranslation } from 'react-i18next'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { transfer } = require('../utils/blockchain')
 export function useStakeCallback({
@@ -15,6 +16,7 @@ export function useStakeCallback({
   callback: null | (() => Promise<string>)
   error: string | null
 } {
+  const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
   return useMemo(() => {
     return {
@@ -38,7 +40,7 @@ export function useStakeCallback({
           .catch((error: any) => {
             // if the user rejected the tx, pass this along
             if (error?.code === 4001) {
-              throw new Error('交易被拒绝')
+              throw new Error(t('text20'))
             } else {
               console.log(error, 'error')
               console.error(`质押失败`, error, 'error')

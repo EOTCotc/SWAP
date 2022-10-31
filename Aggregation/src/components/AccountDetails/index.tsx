@@ -21,6 +21,7 @@ import Identicon from '../Identicon'
 import { ButtonSecondary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
+import { useTranslation } from 'react-i18next'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -227,6 +228,7 @@ export default function AccountDetails({
   openOptions
 }: AccountDetailsProps) {
   const { chainId, account, connector } = useActiveWeb3React()
+  const { t } = useTranslation()
   const theme = useContext(ThemeContext)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -239,7 +241,7 @@ export default function AccountDetails({
           SUPPORTED_WALLETS[k].connector === connector && (connector !== injected || isMetaMask === (k === 'METAMASK'))
       )
       .map(k => SUPPORTED_WALLETS[k].name)[0]
-    return <WalletName>与 {name}</WalletName>
+    return <WalletName> {t('connectedWithWallet', { Wallet: name })}</WalletName>
   }
 
   function getStatusIcon() {
@@ -296,7 +298,7 @@ export default function AccountDetails({
         <CloseIcon onClick={toggleWalletModal}>
           <CloseColor />
         </CloseIcon>
-        <HeaderRow>账户</HeaderRow>
+        <HeaderRow>{t('account')}</HeaderRow>
         <AccountSection>
           <YourAccount>
             <InfoCard>
@@ -319,7 +321,7 @@ export default function AccountDetails({
                       openOptions()
                     }}
                   >
-                    切换
+                    {t('switch')}
                   </WalletAction>
                 </div>
               </AccountGroupingRow>
@@ -349,7 +351,7 @@ export default function AccountDetails({
                       <div>
                         {account && (
                           <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>复制地址</span>
+                            <span style={{ marginLeft: '4px' }}>{t('copyAddress')}</span>
                           </Copy>
                         )}
                         {chainId && account && (
@@ -359,7 +361,7 @@ export default function AccountDetails({
                             href={chainId && getEtherscanLink(chainId, ENSName, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>在币安浏览器上查看</span>
+                            <span style={{ marginLeft: '4px' }}>{t('viewBrowser')}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -371,7 +373,7 @@ export default function AccountDetails({
                       <div>
                         {account && (
                           <Copy toCopy={account}>
-                            <span style={{ marginLeft: '4px' }}>复制地址</span>
+                            <span style={{ marginLeft: '4px' }}>{t('copyAddress')}</span>
                           </Copy>
                         )}
                         {chainId && account && (
@@ -381,7 +383,7 @@ export default function AccountDetails({
                             href={getEtherscanLink(chainId, account, 'address')}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>在币安浏览器上查看</span>
+                            <span style={{ marginLeft: '4px' }}>{t('viewBrowser')}</span>
                           </AddressLink>
                         )}
                       </div>
@@ -396,15 +398,15 @@ export default function AccountDetails({
       {!!pendingTransactions.length || !!confirmedTransactions.length ? (
         <LowerSection>
           <AutoRow mb={'1rem'} style={{ justifyContent: 'space-between' }}>
-            <TYPE.body>最近的交易</TYPE.body>
-            <LinkStyledButton onClick={clearAllTransactionsCallback}>(清除所有)</LinkStyledButton>
+            <TYPE.body>{t('recentTransactions')}</TYPE.body>
+            <LinkStyledButton onClick={clearAllTransactionsCallback}>{t('clearAll')}</LinkStyledButton>
           </AutoRow>
           {renderTransactions(pendingTransactions)}
           {renderTransactions(confirmedTransactions)}
         </LowerSection>
       ) : (
         <LowerSection>
-          <TYPE.body color={theme.text1}>您的交易将出现在这里...</TYPE.body>
+          <TYPE.body color={theme.text1}>{t('yourTransactions')}...</TYPE.body>
         </LowerSection>
       )}
     </>

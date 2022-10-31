@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JSBI, Percent, Router, SwapParameters, Trade, TradeType } from 'eotc-bscswap-sdk'
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BIPS_BASE, DEFAULT_DEADLINE_FROM_NOW, INITIAL_ALLOWED_SLIPPAGE } from '../constants'
 import { getTradeVersion, useV1TradeExchangeAddress } from '../data/V1'
 import { useTransactionAdder } from '../state/transactions/hooks'
@@ -103,7 +104,7 @@ function useSwapCallArguments(
         break
     }
     return swapMethods.map(parameters => ({ parameters, contract }))
-  }, [account, allowedSlippage, chainId, deadline, library, recipient, trade, v1Exchange])
+  }, [account, allowedSlippage, chainId, deadline, dexName, library, recipient, trade, v1Exchange])
 }
 
 // returns a function that will execute a swap, if the parameters are all valid
@@ -120,7 +121,7 @@ export function useSwapCallback(
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName, dexName as string)
   // console.log(swapCalls, 'swapCalls')
   const addTransaction = useTransactionAdder()
-
+  const { t } = useTranslation()
   const { address: recipientAddress } = useENS(recipientAddressOrName)
   const recipient = recipientAddressOrName === null ? account : recipientAddress
 
@@ -211,8 +212,11 @@ export function useSwapCallback(
             const outputSymbol = trade.outputAmount.currency.symbol
             const inputAmount = trade.inputAmount.toSignificant(3)
             const outputAmount = trade.outputAmount.toSignificant(3)
-
-            const base = `用 ${inputAmount} ${inputSymbol} 换 ${outputAmount} ${outputSymbol}`
+            const base = t('text21', {
+              tokenA: `${inputAmount} ${inputSymbol}`,
+              tokenB: `${outputAmount} ${outputSymbol}`
+            })
+            // const base = `用 ${inputAmount} ${inputSymbol} 换 ${outputAmount} ${outputSymbol}`
             const withRecipient =
               recipient === account
                 ? base
@@ -233,8 +237,9 @@ export function useSwapCallback(
           })
           .catch((error: any) => {
             // if the user rejected the tx, pass this along
-            if (error?.code === 4001) {
-              throw new Error('交易被拒绝')
+            console.log(error?.code, 'error?.code')
+            if (error?.code === 4001 || error?.code === 'ACTION_REJECTED') {
+              throw new Error(t('text20'))
             } else {
               // otherwise, the error was unexpected and we need to convey that
               console.error(`交换失败`, error, methodName, args, value)

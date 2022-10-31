@@ -16,26 +16,29 @@ import { fromHex } from 'tron-format-address'
 import { BodyMining, Box, BoxSB, MaxButton, BoxInput } from './styleds'
 import { stake as stakeApi } from '../../services'
 import { useStakeCallback } from '../../hooks/useStakeCallback'
+import { useTranslation } from 'react-i18next'
+import { EOTCUSDTLPTOKEN } from '../../constants'
 
 export default function Stake() {
   const theme = useContext(ThemeContext)
+  const { t } = useTranslation()
   const { account, chainId } = useActiveWeb3React()
   const [selectedDate, setSelectedDate] = useState(6)
   const [visible, setVisible] = useState(false)
-  const LPTOKEN_ADDRESS = '0xC3b56556F745060E7413078079616d450DC046C5'
-  const to = 'TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ'
+  const LPTOKEN_ADDRESS = EOTCUSDTLPTOKEN
+  const to = 'TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq'
   const userPoolBalance = useTokenBalance(
     account ?? undefined,
     new Token(chainId as any, LPTOKEN_ADDRESS, 6, 'EOTC-V2', 'Eotcswap V2')
   )
 
   const [lpInput, setLpInput] = useState('')
-  const MIN_STAKE = '1'
+  const MIN_STAKE = '100'
   const amount = tryParseAmount(lpInput, new Token(chainId as any, LPTOKEN_ADDRESS, 6, 'EOTC-V2', 'Eotcswap V2'))
   const buttonError = useMemo(() => {
-    if (!amount) return '输入'
-    if (userPoolBalance?.lessThan(amount)) return '余额不足'
-    if (amount.lessThan(MIN_STAKE)) return `最低抵押${MIN_STAKE} LP`
+    if (!amount) return t('input')
+    if (userPoolBalance?.lessThan(amount)) return t('insufficientBalance')
+    if (amount.lessThan(MIN_STAKE)) return t('text10', { amount: MIN_STAKE })
     return ''
   }, [amount, userPoolBalance])
 
@@ -82,7 +85,7 @@ export default function Stake() {
           <RowBetween align="center">
             <BoxSB>
               <ClickableText fontWeight={400} fontSize={16} color={'#818DA8'}>
-                年化收益率
+                {t('APY')}
               </ClickableText>
               <Text fontWeight={'bold'} style={{ marginLeft: '10px' }} color={'#E6B37C'}>
                 {APY_LIST[selectedDate] * 100 + '%'}
@@ -94,17 +97,17 @@ export default function Stake() {
         <Box mt="33px">
           <BoxSB>
             <ClickableText fontWeight={400} fontSize={16} color={theme.text1}>
-              质押LP (LP: {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'})
+              {t('stake')} LP (LP: {userPoolBalance ? userPoolBalance.toSignificant(4) : '-'})
             </ClickableText>
             <MaxButton
               onClick={() => {
                 userPoolBalance && userPoolBalance.greaterThan(MIN_STAKE)
                   ? setLpInput(userPoolBalance.toExact() ?? '')
-                  : Toast.fail({ message: `最低抵押${MIN_STAKE} LP` })
+                  : Toast.fail({ message: t('text10', { amount: MIN_STAKE }) })
               }}
             >
               <Text fontWeight={'bold'} fontSize={14} color={'#7B7D8A'}>
-                全部
+                {t('max')}
               </Text>
             </MaxButton>
           </BoxSB>
@@ -113,7 +116,7 @@ export default function Stake() {
           <BoxInput>
             <RowBetween>
               <NumericalInput
-                placeholder={`请输入最低${MIN_STAKE}LP`}
+                placeholder={t('text8', { amount: 100 })}
                 value={lpInput}
                 onUserInput={val => setLpInput(val)}
               />
@@ -125,7 +128,7 @@ export default function Stake() {
                 fontSize={14}
                 color={'#247FF7'}
               >
-                选择区间
+                {t('selectInterval')}
               </Text>
             </RowBetween>
           </BoxInput>
@@ -137,12 +140,12 @@ export default function Stake() {
             }}
             disabled={Boolean(buttonError)}
           >
-            {buttonError || '质押'}{' '}
+            {buttonError || t('stake')}{' '}
           </ButtonPrimary>
         </Box>
         <ActionSheet
-          title="质押区间"
-          cancelText="取消"
+          title={t('stakeInterval')}
+          cancelText={t('cancel')}
           visible={visible}
           onCancel={() => setVisible(false)}
           onSelect={(action: any) => {
@@ -155,7 +158,7 @@ export default function Stake() {
       <Box mt="15px">
         <BodyMining>
           <Text fontWeight={400} fontSize={14} color={'#818DA8'}>
-            由于代币精度问题，LP余额无法在部分钱包显示，不影响质押和赎回
+            {t('text9')}
           </Text>
         </BodyMining>
       </Box>

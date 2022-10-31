@@ -192,7 +192,10 @@ function Web3StatusInner() {
       <Web3StatusConnected id="web3-status-connected" onClick={toggleWalletModal} pending={hasPendingTransactions}>
         {hasPendingTransactions ? (
           <RowBetween>
-            <Text>{pending?.length} 等待</Text> <Loader stroke="white" />
+            <Text>
+              {pending?.length} {t('waiting')}
+            </Text>{' '}
+            <Loader stroke="white" />
           </RowBetween>
         ) : (
           <>
@@ -214,7 +217,7 @@ function Web3StatusInner() {
     return (
       <Web3StatusConnect id="connect-wallet" onClick={toggleWalletModal} faded={!account}>
         <WalletImg src={Wallet} />
-        <Text>{t('连接钱包')}</Text>
+        <Text>{t('connectWallet')}</Text>
       </Web3StatusConnect>
     )
   }

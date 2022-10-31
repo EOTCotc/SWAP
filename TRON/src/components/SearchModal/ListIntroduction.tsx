@@ -28,15 +28,14 @@ export default function ListIntroduction({ onSelectList }: { onSelectList: () =>
             alt="token-list-preview"
           />
           <Text style={{ marginBottom: '8px', textAlign: 'center' }}>
-          Eotcswap 现在支持令牌列表。 您可以通过 IPFS、HTTPS 和 ENS 添加自己的自定义列表。{' '}
+            Eotcswap 现在支持令牌列表。 您可以通过 IPFS、HTTPS 和 ENS 添加自己的自定义列表。{' '}
           </Text>
           <ButtonPrimary onClick={onSelectList} id="list-introduction-choose-a-list">
-          选择一个列表
+            选择一个列表
           </ButtonPrimary>
           <OutlineCard style={{ marginBottom: '8px', padding: '1rem' }}>
             <Text fontWeight={400} fontSize={14} style={{ textAlign: 'center' }}>
-            令牌列表是一个{' '}
-              <ExternalLink href="https://github.com/uniswap/token-lists">开放规范</ExternalLink>. 查看{' '}
+              令牌列表是一个 <ExternalLink href="https://github.com/uniswap/token-lists">开放规范</ExternalLink>. 查看{' '}
               <ExternalLink href="https://tokenlists.org">tokenlists.org</ExternalLink> 了解更多。
             </Text>
           </OutlineCard>

@@ -140,3 +140,42 @@ export function isTokenOnList(defaultTokens: TokenAddressMap, currency?: Currenc
   if (currency === ETHER) return true
   return Boolean(currency instanceof Token && defaultTokens[currency.chainId]?.[currency.address])
 }
+// 科学计数法转数值 - 处理 1e-7 这类精度问题
+export function getFullNum(num: number): any {
+  // 处理非数字
+  if (isNaN(num)) {
+    return num
+  }
+  // 处理不需要转换的数字
+  const str = String(num)
+  if (!/e/i.test(str)) {
+    return num
+  }
+  console.log(
+    Number(num)
+      .toFixed(18)
+      .replace(/\.?0+$/, '')
+  )
+  return Number(num)
+    .toFixed(18)
+    .replace(/\.?0+$/, '')
+}
+
+// 返回小数位后几位 截取
+// number 数值
+// p 位数
+export function toFixed(number: number, pp: number) {
+  let num = isNaN(number) || !number ? 0 : number
+  const p = isNaN(pp) || !pp ? 0 : pp
+  num = getFullNum(num)
+  var n = (num + '').split('.') // eslint-disable-line
+  var x = n.length > 1 ? n[1] : '' // eslint-disable-line
+  if (x.length > p) {
+    // eslint-disable-line
+    x = x.substr(0, p) // eslint-disable-line
+  } else {
+    // eslint-disable-line
+    x += Array(p - x.length + 1).join('0') // eslint-disable-line
+  } // eslint-disable-line
+  return n[0] + (x == '' ? '' : '.' + x) // eslint-disable-line
+}

@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, currencyEquals, ETHER, TokenAmount, WETH } from 'eotc-bscswap-sdk'
+import { Currency, currencyEquals, TokenAmount, WETH } from 'eotc-bscswap-sdk'
 import React, { useCallback, useContext, useState } from 'react'
 import { Plus } from 'react-feather'
 import ReactGA from 'react-ga'
@@ -17,7 +17,7 @@ import { AddRemoveTabs } from '../../components/NavigationTabs'
 import { MinimalPositionCard } from '../../components/PositionCard'
 import Row, { RowBetween, RowFlat } from '../../components/Row'
 
-import { ROUTER_ADDRESS } from '../../constants'
+// import { ROUTER_ADDRESS } from '../../constants'
 import { PairState } from '../../data/Reserves'
 import { useActiveWeb3React } from '../../hooks'
 import { useCurrency } from '../../hooks/Tokens'
@@ -37,6 +37,8 @@ import { Dots, Wrapper } from '../Pool/styleds'
 import { ConfirmAddModalBottom } from './ConfirmAddModalBottom'
 import { currencyId } from '../../utils/currencyId'
 import { PoolPriceBar } from './PoolPriceBar'
+import { useGetRouterAddress } from '../../hooks/useGetRouterAddress'
+import { useTranslation } from 'react-i18next'
 
 export default function AddLiquidity({
   match: {
@@ -46,7 +48,7 @@ export default function AddLiquidity({
 }: RouteComponentProps<{ currencyIdA?: string; currencyIdB?: string }>) {
   const { account, chainId, library } = useActiveWeb3React()
   const theme = useContext(ThemeContext)
-
+  const { t } = useTranslation()
   const currencyA = useCurrency(currencyIdA)
   const currencyB = useCurrency(currencyIdB)
 
@@ -76,7 +78,6 @@ export default function AddLiquidity({
     error
   } = useDerivedMintInfo(currencyA ?? undefined, currencyB ?? undefined)
   const { onFieldAInput, onFieldBInput } = useMintActionHandlers(noLiquidity)
-
   const isValid = !error
 
   // modal and loading
@@ -114,10 +115,10 @@ export default function AddLiquidity({
     },
     {}
   )
-
+  const routerAddress = useGetRouterAddress()
   // check whether the user has approved the router on the tokens
-  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], ROUTER_ADDRESS)
-  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], ROUTER_ADDRESS)
+  const [approvalA, approveACallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_A], routerAddress)
+  const [approvalB, approveBCallback] = useApproveCallback(parsedAmounts[Field.CURRENCY_B], routerAddress)
 
   const addTransaction = useTransactionAdder()
 
@@ -141,10 +142,13 @@ export default function AddLiquidity({
       method: (...args: any) => Promise<TransactionResponse>,
       args: Array<string | string[] | number>,
       value: BigNumber | null
-    if (currencyA === ETHER || currencyB === ETHER) {
-      const tokenBIsETH = currencyB === ETHER
+
+    if (currencyA === Currency.ETHER || currencyB === Currency.ETHER) {
+      const tokenBIsETH = currencyB === Currency.ETHER
+
       estimate = router.estimateGas.addLiquidityETH
       method = router.addLiquidityETH
+
       args = [
         wrappedCurrency(tokenBIsETH ? currencyA : currencyB, chainId)?.address ?? '', // token
         (tokenBIsETH ? parsedAmountA : parsedAmountB).raw.toString(), // token desired
@@ -153,6 +157,7 @@ export default function AddLiquidity({
         account,
         deadlineFromNow
       ]
+
       value = BigNumber.from((tokenBIsETH ? parsedAmountB : parsedAmountA).raw.toString())
     } else {
       estimate = router.estimateGas.addLiquidity
@@ -171,24 +176,21 @@ export default function AddLiquidity({
     }
 
     setAttemptingTxn(true)
+    console.log(estimate, 'estimate')
     await estimate(...args, value ? { value } : {})
       .then(estimatedGasLimit =>
         method(...args, {
           ...(value ? { value } : {}),
           gasLimit: calculateGasMargin(estimatedGasLimit)
         }).then(response => {
+          console.log(response, 'response')
           setAttemptingTxn(false)
 
           addTransaction(response, {
-            summary:
-              '添加 ' +
-              parsedAmounts[Field.CURRENCY_A]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_A]?.symbol +
-              ' 和 ' +
-              parsedAmounts[Field.CURRENCY_B]?.toSignificant(3) +
-              ' ' +
-              currencies[Field.CURRENCY_B]?.symbol
+            summary: t('text32', {
+              tokenA: `${parsedAmounts[Field.CURRENCY_A]?.toSignificant(3)} ${currencies[Field.CURRENCY_A]?.symbol}`,
+              tokenB: `${parsedAmounts[Field.CURRENCY_B]?.toSignificant(3)} ${currencies[Field.CURRENCY_B]?.symbol}`
+            })
           })
 
           setTxHash(response.hash)
@@ -239,11 +241,15 @@ export default function AddLiquidity({
         </RowFlat>
         <Row>
           <Text fontSize="24px">
-            {currencies[Field.CURRENCY_A]?.symbol + '/' + currencies[Field.CURRENCY_B]?.symbol + '池代币'}
+            {currencies[Field.CURRENCY_A]?.symbol +
+              '/' +
+              currencies[Field.CURRENCY_B]?.symbol +
+              t('liquidityPoolToken')}
           </Text>
         </Row>
         <TYPE.italic fontSize={12} textAlign="left" padding={'8px 0 0 0 '}>
-          {`估计输出。如果价格变化超过 ${allowedSlippage / 100}% 您的交易将恢复。`}
+          {/* {`估计输出。如果价格变化超过 ${allowedSlippage / 100}% 您的交易将恢复。`} */}
+          {t('text7', { slippage: allowedSlippage / 100 })}
         </TYPE.italic>
       </AutoColumn>
     )
@@ -262,10 +268,13 @@ export default function AddLiquidity({
     )
   }
 
-  const pendingText = `提供 ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
-    currencies[Field.CURRENCY_A]?.symbol
-  } 和 ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
-
+  // const pendingText = `提供 ${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${
+  //   currencies[Field.CURRENCY_A]?.symbol
+  // } 和 ${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
+  const pendingText = t('text31', {
+    tokanA: `${parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)} ${currencies[Field.CURRENCY_A]?.symbol}`,
+    tokenB: `${parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)} ${currencies[Field.CURRENCY_B]?.symbol}`
+  })
   const handleCurrencyASelect = useCallback(
     (currencyA: Currency) => {
       const newCurrencyIdA = currencyId(currencyA)
@@ -314,7 +323,7 @@ export default function AddLiquidity({
             hash={txHash}
             content={() => (
               <ConfirmationModalContent
-                title={noLiquidity ? '您正在创建一个池' : '您将收到'}
+                title={noLiquidity ? t('text30') : t('youWillReceive')}
                 onDismiss={handleDismissConfirmation}
                 topContent={modalHeader}
                 bottomContent={modalBottom}
@@ -328,13 +337,13 @@ export default function AddLiquidity({
                 <BlueCard>
                   <AutoColumn gap="10px">
                     <TYPE.link fontWeight={600} color={'primaryText1'}>
-                      您是第一个流动性提供者。
+                      {t('firstLiquidity')}
                     </TYPE.link>
                     <TYPE.link fontWeight={400} color={'primaryText1'}>
-                      您添加的代币比例将决定该池的价格。
+                      {t('text3')}
                     </TYPE.link>
                     <TYPE.link fontWeight={400} color={'primaryText1'}>
-                      一旦您对价格感到满意，请单击供应进行审查。
+                      {t('text4')}
                     </TYPE.link>
                   </AutoColumn>
                 </BlueCard>
@@ -372,7 +381,8 @@ export default function AddLiquidity({
                 <GreyCard padding="0px" borderRadius={'20px'}>
                   <RowBetween padding="1rem">
                     <TYPE.subHeader fontWeight={500} fontSize={14}>
-                      {noLiquidity ? '初始价格' : '价格'} 和池份额
+                      {/* {noLiquidity ? '初始价格' : '价格'} 和池份额 */}
+                      {t('initialPrices')}
                     </TYPE.subHeader>
                   </RowBetween>{' '}
                   <LightCard padding="1rem" borderRadius={'20px'}>
@@ -404,9 +414,11 @@ export default function AddLiquidity({
                           width={approvalB !== ApprovalState.APPROVED ? '48%' : '100%'}
                         >
                           {approvalA === ApprovalState.PENDING ? (
-                            <Dots>授权 {currencies[Field.CURRENCY_A]?.symbol}</Dots>
+                            <Dots>
+                              {t('approval')} {currencies[Field.CURRENCY_A]?.symbol}
+                            </Dots>
                           ) : (
-                            '授权 ' + currencies[Field.CURRENCY_A]?.symbol
+                            t('approval') + ' ' + currencies[Field.CURRENCY_A]?.symbol
                           )}
                         </ButtonPrimary>
                       )}
@@ -417,9 +429,11 @@ export default function AddLiquidity({
                           width={approvalA !== ApprovalState.APPROVED ? '48%' : '100%'}
                         >
                           {approvalB === ApprovalState.PENDING ? (
-                            <Dots>授权 {currencies[Field.CURRENCY_B]?.symbol}</Dots>
+                            <Dots>
+                              {t('approval')} {currencies[Field.CURRENCY_B]?.symbol}
+                            </Dots>
                           ) : (
-                            '授权 ' + currencies[Field.CURRENCY_B]?.symbol
+                            t('approval') + ' ' + currencies[Field.CURRENCY_B]?.symbol
                           )}
                         </ButtonPrimary>
                       )}
@@ -433,7 +447,7 @@ export default function AddLiquidity({
                   error={!isValid && !!parsedAmounts[Field.CURRENCY_A] && !!parsedAmounts[Field.CURRENCY_B]}
                 >
                   <Text fontSize={20} fontWeight={500}>
-                    {error ?? '供应'}
+                    {error ?? t('supply')}
                   </Text>
                 </ButtonError>
               </AutoColumn>

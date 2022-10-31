@@ -6,7 +6,7 @@ import { RowBetween, RowFixed } from '../../components/Row'
 import CurrencyLogo from '../../components/CurrencyLogo'
 import { Field } from '../../state/mint/actions'
 import { TYPE } from '../../theme'
-
+import { useTranslation } from 'react-i18next'
 export function ConfirmAddModalBottom({
   noLiquidity,
   price,
@@ -22,24 +22,29 @@ export function ConfirmAddModalBottom({
   poolTokenPercentage?: Percent
   onAdd: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <>
       <RowBetween>
-        <TYPE.body>{currencies[Field.CURRENCY_A]?.symbol} 存款</TYPE.body>
+        <TYPE.body>
+          {currencies[Field.CURRENCY_A]?.symbol} {t('deposits')}
+        </TYPE.body>
         <RowFixed>
           <CurrencyLogo currency={currencies[Field.CURRENCY_A]} style={{ marginRight: '8px' }} />
           <TYPE.body>{parsedAmounts[Field.CURRENCY_A]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <TYPE.body>{currencies[Field.CURRENCY_B]?.symbol} 存款</TYPE.body>
+        <TYPE.body>
+          {currencies[Field.CURRENCY_B]?.symbol} {t('deposits')}
+        </TYPE.body>
         <RowFixed>
           <CurrencyLogo currency={currencies[Field.CURRENCY_B]} style={{ marginRight: '8px' }} />
           <TYPE.body>{parsedAmounts[Field.CURRENCY_B]?.toSignificant(6)}</TYPE.body>
         </RowFixed>
       </RowBetween>
       <RowBetween>
-        <TYPE.body>费率</TYPE.body>
+        <TYPE.body>{t('rates')}</TYPE.body>
         <TYPE.body>
           {`1 ${currencies[Field.CURRENCY_A]?.symbol} = ${price?.toSignificant(4)} ${
             currencies[Field.CURRENCY_B]?.symbol
@@ -54,12 +59,12 @@ export function ConfirmAddModalBottom({
         </TYPE.body>
       </RowBetween>
       <RowBetween>
-        <TYPE.body>池份额:</TYPE.body>
+        <TYPE.body>{t('shareOfPool')}:</TYPE.body>
         <TYPE.body>{noLiquidity ? '100' : poolTokenPercentage?.toSignificant(4)}%</TYPE.body>
       </RowBetween>
       <ButtonPrimary style={{ margin: '20px 0 0 0' }} onClick={onAdd}>
         <Text fontWeight={500} fontSize={20}>
-          {noLiquidity ? '创建池 & 供应' : '确认供应'}
+          {noLiquidity ? t('createPoolSupply') : t('confirmSupply')}
         </Text>
       </ButtonPrimary>
     </>

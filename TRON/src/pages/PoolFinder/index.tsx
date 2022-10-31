@@ -18,7 +18,7 @@ import { StyledInternalLink } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
 import { Dots } from '../Pool/styleds'
-
+import { useTranslation } from 'react-i18next'
 enum Fields {
   TOKEN0 = 0,
   TOKEN1 = 1
@@ -26,7 +26,7 @@ enum Fields {
 
 export default function PoolFinder() {
   const { account } = useActiveWeb3React()
-
+  const { t } = useTranslation()
   const [showSearch, setShowSearch] = useState<boolean>(false)
   const [activeField, setActiveField] = useState<number>(Fields.TOKEN1)
 
@@ -70,7 +70,7 @@ export default function PoolFinder() {
 
   const prerequisiteMessage = (
     <LightCard padding="45px 10px">
-      <Text textAlign="center">{!account ? '连接到钱包以查找池' : '选择一个代币来查找您的流动性'}</Text>
+      <Text textAlign="center">{!account ? t('connectWalletPool') : t('findLiquidity')}</Text>
     </LightCard>
   )
 
@@ -93,7 +93,7 @@ export default function PoolFinder() {
             </Row>
           ) : (
             <Text fontWeight={500} fontSize={20} marginLeft={'12px'}>
-              选择代币
+              {t('selectToken')}
             </Text>
           )}
         </ButtonDropdownLight>
@@ -117,7 +117,7 @@ export default function PoolFinder() {
             </Row>
           ) : (
             <Text fontWeight={500} fontSize={20} marginLeft={'12px'}>
-              选择代币
+              {t('selectToken')}
             </Text>
           )}
         </ButtonDropdownLight>
@@ -127,7 +127,7 @@ export default function PoolFinder() {
             style={{ justifyItems: 'center', backgroundColor: '', padding: '12px 0px', borderRadius: '12px' }}
           >
             <Text textAlign="center" fontWeight={500}>
-              发现池
+              {t('discoveryPools')}
             </Text>
           </ColumnCenter>
         )}
@@ -139,9 +139,9 @@ export default function PoolFinder() {
             ) : (
               <LightCard padding="45px 10px">
                 <AutoColumn gap="sm" justify="center">
-                  <Text textAlign="center">你在这个池中还没有流动性。</Text>
+                  <Text textAlign="center">{t('text14')}</Text>
                   <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                    <Text textAlign="center">增加流动性</Text>
+                    <Text textAlign="center">{t('addLiquidity')}</Text>
                   </StyledInternalLink>
                 </AutoColumn>
               </LightCard>
@@ -149,9 +149,9 @@ export default function PoolFinder() {
           ) : validPairNoLiquidity ? (
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
-                <Text textAlign="center">未找到池</Text>
+                <Text textAlign="center">{t('noLiquidityFound')}</Text>
                 <StyledInternalLink to={`/add/${currencyId(currency0)}/${currencyId(currency1)}`}>
-                  创建池
+                  {t('createPoolSupply')}
                 </StyledInternalLink>
               </AutoColumn>
             </LightCard>
@@ -159,7 +159,7 @@ export default function PoolFinder() {
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
                 <Text textAlign="center" fontWeight={500}>
-                无效对.
+                  {t('invalidTokenPair')}
                 </Text>
               </AutoColumn>
             </LightCard>
@@ -167,7 +167,7 @@ export default function PoolFinder() {
             <LightCard padding="45px 10px">
               <AutoColumn gap="sm" justify="center">
                 <Text textAlign="center">
-                正在加载
+                  {t('Loading')}
                   <Dots />
                 </Text>
               </AutoColumn>

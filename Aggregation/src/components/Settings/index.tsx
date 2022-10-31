@@ -1,7 +1,8 @@
-import React, { useRef, useContext, useState } from 'react'
+import React, { useRef, useContext, useState, useEffect } from 'react'
 import { Settings, X } from 'react-feather'
 import styled from 'styled-components'
 import { useOnClickOutside } from '../../hooks/useOnClickOutside'
+import { LangOptions } from '../../i18n'
 import {
   useUserSlippageTolerance,
   useExpertModeManager,
@@ -19,7 +20,9 @@ import { ButtonError } from '../Button'
 import { useSettingsMenuOpen, useToggleSettingsMenu } from '../../state/application/hooks'
 import { Text } from 'rebass'
 import Modal from '../Modal'
-
+import ToggleLang from './ToggleLang '
+import { ChevronRight } from 'react-feather'
+import { useTranslation } from 'react-i18next'
 const StyledMenuIcon = styled(Settings)`
   height: 22px;
   width: 22px;
@@ -82,9 +85,9 @@ const StyledMenu = styled.div`
   text-align: left;
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    position: absolute;
-    top: 28px;
-    right: 20px;
+    // position: absolute;
+    // top: 28px;
+    // right: 20px;
   `};
 `
 
@@ -125,11 +128,20 @@ const ModalContentWrapper = styled.div`
   background-color: ${({ theme }) => theme.bg2};
   border-radius: 20px;
 `
-
+const StyledChevronRight = styled(ChevronRight)`
+  width: 16px;
+`
 export default function SettingsTab() {
+  const { t } = useTranslation()
   const node = useRef<HTMLDivElement>()
   const open = useSettingsMenuOpen()
   const toggle = useToggleSettingsMenu()
+  const [isOpen, setModal] = useState(false)
+  const openModal = () => {
+    setModal(true)
+    open ? toggle() : undefined
+  }
+  // const toggleModal = () => setModal(!isOpen)
 
   const theme = useContext(ThemeContext)
   const [userSlippageTolerance, setUserslippageTolerance] = useUserSlippageTolerance()
@@ -143,7 +155,35 @@ export default function SettingsTab() {
   // show confirmation view before turning on
   const [showConfirmation, setShowConfirmation] = useState(false)
 
-  useOnClickOutside(node, open ? toggle : undefined)
+  useOnClickOutside(
+    node,
+    open
+      ? () => {
+          toggle()
+          isOpen ? setModal(false) : undefined
+          // toggleModal()
+        }
+      : undefined
+  )
+  useOnClickOutside(
+    node,
+    isOpen
+      ? () => {
+          // toggle()
+          // toggleModal()
+          setModal(false)
+        }
+      : undefined
+  )
+  const [language, setLanguage] = useState('zh-CN')
+  useEffect(() => {
+    const type = localStorage.getItem('i18nextLng')
+    if (type) {
+      setLanguage(type)
+    } else {
+      //如果被清空了 那么当前语言会被设置为默认语言 zh-C
+    }
+  }, [])
 
   return (
     // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/30451
@@ -154,17 +194,17 @@ export default function SettingsTab() {
             <RowBetween style={{ padding: '0 2rem' }}>
               <div />
               <Text fontWeight={500} fontSize={20}>
-                你确定吗？
+                {t('text11')}
               </Text>
               <StyledCloseIcon onClick={() => setShowConfirmation(false)} />
             </RowBetween>
             <Break />
             <AutoColumn gap="lg" style={{ padding: '0 2rem' }}>
               <Text fontWeight={500} fontSize={20}>
-                专家模式关闭确认交易提示，并允许经常出现的高滑动交易糟糕的利率和资金损失。
+                {t('text12')}
               </Text>
               <Text fontWeight={600} fontSize={20}>
-                仅当您知道自己在做什么时才使用此模式。
+                {t('text13')}
               </Text>
               <ButtonError
                 error={true}
@@ -177,14 +217,20 @@ export default function SettingsTab() {
                 }}
               >
                 <Text fontSize={20} fontWeight={500} id="confirm-expert-mode">
-                  打开专家模式
+                  {t('openExpertMode')}
                 </Text>
               </ButtonError>
             </AutoColumn>
           </AutoColumn>
         </ModalContentWrapper>
       </Modal>
-      <StyledMenuButton onClick={toggle} id="open-settings-dialog-button">
+      <StyledMenuButton
+        onClick={() => {
+          toggle()
+          isOpen ? setModal(false) : undefined
+        }}
+        id="open-settings-dialog-button"
+      >
         <StyledMenuIcon />
         {expertMode && (
           <EmojiWrapper>
@@ -198,7 +244,7 @@ export default function SettingsTab() {
         <MenuFlyout>
           <AutoColumn gap="md" style={{ padding: '1rem' }}>
             <Text fontWeight={600} fontSize={14}>
-              高级设置
+              {t('advancedSettings')}
             </Text>
             <TransactionSettings
               rawSlippage={userSlippageTolerance}
@@ -207,14 +253,14 @@ export default function SettingsTab() {
               setDeadline={setDeadline}
             />
             <Text fontWeight={600} fontSize={14}>
-              界面设置
+              {t('interfaceSettings')}
             </Text>
             <RowBetween>
               <RowFixed>
                 <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-                  专家模式
+                  {t('toggleExpertMode')}
                 </TYPE.black>
-                <QuestionHelper text="允许高度影响价格的交易，并跳过确认步骤。需自行承担使用风险。" />
+                <QuestionHelper text={t('expertModeQuestionHelper')} />
               </RowFixed>
               <Toggle
                 id="toggle-expert-mode-button"
@@ -227,6 +273,7 @@ export default function SettingsTab() {
                       }
                     : () => {
                         toggle()
+                        setModal(false)
                         setShowConfirmation(true)
                       }
                 }
@@ -235,11 +282,42 @@ export default function SettingsTab() {
             <RowBetween>
               <RowFixed>
                 <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
-                  切换白天模式
+                  {t('toggleDarkMode')}
                 </TYPE.black>
               </RowFixed>
               <Toggle isActive={darkMode} toggle={toggleDarkMode} />
             </RowBetween>
+            <RowBetween>
+              <RowFixed>
+                <TYPE.black fontWeight={400} fontSize={14} color={theme.text2}>
+                  {t('language')}
+                </TYPE.black>
+              </RowFixed>
+              {/* <ToggleLang /> */}
+              <div style={{ display: 'flex', cursor: 'pointer' }} onClick={openModal}>
+                <TYPE.black
+                  style={{ display: 'flex', alignItems: 'center' }}
+                  fontWeight={400}
+                  fontSize={14}
+                  color={theme.text2}
+                >
+                  {LangOptions.find(item => item.value === language)?.label}
+                </TYPE.black>
+                <StyledChevronRight />
+              </div>
+
+              {/* <Toggle isActive={darkMode} toggle={toggleDarkMode} /> */}
+            </RowBetween>
+          </AutoColumn>
+        </MenuFlyout>
+      )}
+      {isOpen && (
+        <MenuFlyout>
+          <AutoColumn gap="md" style={{ padding: '1rem' }}>
+            <Text fontWeight={600} fontSize={18}>
+              {t('selectLanguage')}
+            </Text>
+            <ToggleLang language={language} setLanguage={setLanguage} />
           </AutoColumn>
         </MenuFlyout>
       )}

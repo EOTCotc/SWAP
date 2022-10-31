@@ -12,7 +12,7 @@ import { Input as NumericalInput } from '../NumericalInput'
 import { ReactComponent as DropDown } from '../../assets/images/dropdown.svg'
 // import BnbLogo from '../../assets/images/bnb.png'
 import { useActiveWeb3React } from '../../hooks'
-// import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 // padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
 const InputRow = styled.div<{ selected: boolean }>`
@@ -135,7 +135,7 @@ export default function CurrencyInputPanel({
   onUserInput,
   onMax,
   showMaxButton,
-  label = '输入',
+  label = 'input',
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
@@ -147,8 +147,7 @@ export default function CurrencyInputPanel({
   showCommonBases,
   showInput = true
 }: CurrencyInputPanelProps) {
-  // const { t } = useTranslation()
-
+  const { t } = useTranslation()
   const [modalOpen, setModalOpen] = useState(false)
   const { account } = useActiveWeb3React()
   const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
@@ -165,7 +164,7 @@ export default function CurrencyInputPanel({
           <LabelRow>
             <RowBetween>
               <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
-                {label}
+                {t(label)}
               </TYPE.body>
               {account && (
                 <TYPE.body
@@ -176,7 +175,7 @@ export default function CurrencyInputPanel({
                   style={{ display: 'inline', cursor: 'pointer' }}
                 >
                   {!hideBalance && !!currency && selectedCurrencyBalance
-                    ? '余额: ' + selectedCurrencyBalance?.toSignificant(6)
+                    ? t('balance', { balanceInput: selectedCurrencyBalance?.toSignificant(6) })
                     : ' -'}
                 </TYPE.body>
               )}
@@ -233,7 +232,7 @@ export default function CurrencyInputPanel({
                 <StyledBalanceMax onClick={onMax}>MAX</StyledBalanceMax>
               ) */}
               {account && currency && showMaxButton && label !== 'To' && (
-                <StyledBalanceMax onClick={onMax}>全部</StyledBalanceMax>
+                <StyledBalanceMax onClick={onMax}>{t('max')}</StyledBalanceMax>
               )}
             </>
           )}

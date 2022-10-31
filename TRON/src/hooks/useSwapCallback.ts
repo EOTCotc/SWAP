@@ -13,6 +13,7 @@ import { useV1ExchangeContract } from './useContract'
 import useENS from './useENS'
 import { Version } from './useToggledVersion'
 import { fromHex } from 'tron-format-address'
+import { useTranslation } from 'react-i18next'
 // import { DEFAULT_FEE_LIMIT } from '../tron-config'
 // import { trigger } from '../utils/blockchain'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -125,7 +126,7 @@ export function useSwapCallback(
 
   // const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName)
   const swapCalls = useSwapCallArguments(trade, allowedSlippage, deadline, recipientAddressOrName, dexName as string)
-
+  const { t } = useTranslation()
   const addTransaction = useTransactionAdder()
 
   const { address: recipientAddress } = useENS(recipientAddressOrName)
@@ -240,8 +241,11 @@ export function useSwapCallback(
             const outputSymbol = trade.outputAmount.currency.symbol
             const inputAmount = trade.inputAmount.toSignificant(3)
             const outputAmount = trade.outputAmount.toSignificant(3)
-
-            const base = `用 ${inputAmount} ${inputSymbol} 换 ${outputAmount} ${outputSymbol}`
+            const base = t('text21', {
+              tokenA: `${inputAmount} ${inputSymbol}`,
+              tokenB: `${outputAmount} ${outputSymbol}`
+            })
+            // const base = `用 ${inputAmount} ${inputSymbol} 换 ${outputAmount} ${outputSymbol}`
             const withRecipient =
               recipient === account
                 ? base
@@ -264,7 +268,7 @@ export function useSwapCallback(
           .catch((error: any) => {
             // if the user rejected the tx, pass this along
             if (error?.code === 4001) {
-              throw new Error('交易被拒绝')
+              throw new Error(t('text20'))
             } else {
               console.log(error, 'error')
               // otherwise, the error was unexpected and we need to convey that

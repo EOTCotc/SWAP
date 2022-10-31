@@ -42,6 +42,7 @@ import { useWalletModalToggle } from '../../state/application/hooks'
 import { useUserDeadline, useUserSlippageTolerance } from '../../state/user/hooks'
 // import { BigNumber } from '@ethersproject/bignumber'
 import { DEFAULT_FEE_LIMIT } from '../../tron-config'
+import { useTranslation } from 'react-i18next'
 
 export default function RemoveLiquidity({
   history,
@@ -59,7 +60,7 @@ export default function RemoveLiquidity({
   ])
 
   const theme = useContext(ThemeContext)
-
+  const { t } = useTranslation()
   // toggle wallet when disconnected
   const toggleWalletModal = useWalletModalToggle()
 
@@ -662,7 +663,7 @@ export default function RemoveLiquidity({
             )}
             <div style={{ position: 'relative' }}>
               {!account ? (
-                <ButtonLight onClick={toggleWalletModal}>连接钱包</ButtonLight>
+                <ButtonLight onClick={toggleWalletModal}>{t('connectWallet')}</ButtonLight>
               ) : (
                 <RowBetween>
                   <ButtonConfirmed
